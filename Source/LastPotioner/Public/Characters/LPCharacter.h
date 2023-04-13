@@ -7,6 +7,8 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "Characters/CharacterTypes.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "Camera/CameraComponent.h"
 #include "LPCharacter.generated.h"
 
 class UInputAction;
@@ -14,6 +16,7 @@ class UInputMappingContext;
 class USpringArmComponent;
 class UCameraComponent;
 class ULPAttributeComponent;
+class ULPInventoryComponent;
 class ALPBaseItem;
 class ALPWeapon;
 
@@ -21,13 +24,20 @@ UCLASS()
 class LASTPOTIONER_API ALPCharacter : public ALPBaseCharacter
 {
 	GENERATED_BODY()
+
 public:
 	ALPCharacter();
-	
-		virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	FOnCharacterStateChangedSignature OnCharacterStateChanged;
 
 	virtual void GetHit_Implementation(const FHitResult& HitResult) override;
+	virtual void Tick(float DeltaSeconds) override;
+
+	UFUNCTION(BlueprintCallable)
+	void Interact();
+
+	int AddItemToInventory(const ALPBaseItem* Item) const;
 
 protected:
 	virtual void BeginPlay() override;
@@ -49,6 +59,12 @@ protected:
 	void ContinueArm();
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	AActor* CurrentInteractable;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(AllowPrivateAccess="true"))
+	ULPInventoryComponent* InventoryComponent;
+	
 	UPROPERTY(VisibleAnywhere)
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 
@@ -104,9 +120,11 @@ private:
 	/*
 	 * Animation
 	 */
-	
+
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* EquipAnimMontage;
+
+	void CheckForInteractables();
 
 public:
 	FORCEINLINE void SetOverlappingItem(ALPBaseItem* Item) { OverlappingItem = Item; }

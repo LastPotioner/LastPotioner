@@ -10,25 +10,28 @@
 #include "Weapons/LPWeapon.h"
 #include "Components/LPAttributeComponent.h"
 #include "GameFramework/PlayerController.h"
+#include "Kismet/KismetSystemLibrary.h"
+#include "InventorySystem/LPInventoryComponent.h"
+#include "Interfaces/Interactable.h"
 
 ALPCharacter::ALPCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
-
-	SpringArm1 = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
-	SpringArm1->SetupAttachment(GetRootComponent());
+	PrimaryActorTick.bCanEverTick = true;
 
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(SpringArm1);
+	Camera->SetupAttachment(GetRootComponent());
+	Camera->bUsePawnControlRotation = true;
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
 	AttributeComponent = CreateDefaultSubobject<ULPAttributeComponent>(TEXT("Attribute Component"));
+	InventoryComponent = CreateDefaultSubobject<ULPInventoryComponent>(TEXT("Inventory"));
 
 	GetMesh()->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
+	GetMesh()->SetupAttachment(Camera);
 }
 
 void ALPCharacter::BeginPlay()
@@ -45,6 +48,48 @@ void ALPCharacter::BeginPlay()
 			Subsystem->AddMappingContext(LPMappingContext, 0);
 		}
 	}
+}
+
+void ALPCharacter::CheckForInteractables()
+{
+	if (Camera)
+	{
+		const FVector Start = Camera->GetComponentLocation();
+		const FVector End = Start + Camera->GetForwardVector() * 1000.0f;
+		
+		FHitResult HitResult;
+		const bool HasHit = UKismetSystemLibrary::SphereTraceSingle(this, Start, End, 20.0f,
+		                                                            ETraceTypeQuery::TraceTypeQuery1, false, {},
+		                                                            EDrawDebugTrace::ForOneFrame, HitResult, true);
+
+		if (HasHit)
+		{
+			AActor* HitActor = HitResult.GetActor();
+			if (UKismetSystemLibrary::DoesImplementInterface(HitActor, UInteractable::StaticClass()))
+			{
+				if (HitActor != CurrentInteractable)
+				{
+					UE_LOG(LogTemp, Display, TEXT("Set Interactable"));
+					CurrentInteractable = HitActor;
+				}
+			}
+			else
+			{
+				CurrentInteractable = nullptr;
+			}
+		}
+		else
+		{
+			CurrentInteractable = nullptr;
+		}
+	}
+}
+
+void ALPCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	CheckForInteractables();
 }
 
 void ALPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -210,4 +255,19 @@ bool ALPCharacter::CanAttack() const
 void ALPCharacter::GetHit_Implementation(const FHitResult& HitResult)
 {
 	Super::GetHit_Implementation(HitResult);
+}
+
+void ALPCharacter::Interact()
+{
+	if (CurrentInteractable && UKismetSystemLibrary::DoesImplementInterface(CurrentInteractable, UInteractable::StaticClass()))
+	{
+		IInteractable::Execute_Interact(CurrentInteractable, this);
+	}
+}
+
+int ALPCharacter::AddItemToInventory(const ALPBaseItem* Item) const
+{
+	if (!InventoryComponent) return 0;
+
+	return InventoryComponent->AddItem(Item);
 }
