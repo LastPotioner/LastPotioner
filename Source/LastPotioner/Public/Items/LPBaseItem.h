@@ -14,8 +14,8 @@ class ALPCharacter;
 UENUM(BlueprintType)
 enum class EItemState : uint8
 {
-	EIS_Hovering,
-	EIS_Equipped,
+	EIS_OnGround,
+	EIS_Taken,
 };
 
 USTRUCT(BlueprintType)
@@ -23,23 +23,33 @@ struct FItemSlotData
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UTexture2D* ItemIcon;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int ID = -1;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int Value = 0;
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bIsStackable = false;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<ALPBaseItem> ItemClass;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int MaxStackSize = 0;
+
+	void CopyFrom(const FItemSlotData& Other)
+	{
+		ItemIcon = Other.ItemIcon;
+		ID = Other.ID;
+		Value = Other.Value;
+		bIsStackable = Other.bIsStackable;
+		ItemClass = Other.ItemClass;
+		MaxStackSize = Other.MaxStackSize;
+	}
 };
 
 UCLASS()
@@ -69,7 +79,7 @@ protected:
 	virtual void BeginPlay() override;
 
 	UPROPERTY(VisibleAnywhere)
-	EItemState ItemState = EItemState::EIS_Hovering;
+	EItemState ItemState = EItemState::EIS_OnGround;
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;

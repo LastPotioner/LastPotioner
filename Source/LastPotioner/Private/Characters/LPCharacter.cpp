@@ -61,7 +61,7 @@ void ALPCharacter::CheckForInteractables()
 		FHitResult HitResult;
 		const bool HasHit = UKismetSystemLibrary::SphereTraceSingle(this, Start, End, 20.0f,
 		                                                            ETraceTypeQuery::TraceTypeQuery1, false, {},
-		                                                            EDrawDebugTrace::ForOneFrame, HitResult, true);
+		                                                            EDrawDebugTrace::None, HitResult, true);
 
 		if (HasHit)
 		{

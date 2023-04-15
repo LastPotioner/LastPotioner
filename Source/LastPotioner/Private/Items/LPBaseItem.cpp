@@ -32,11 +32,6 @@ void ALPBaseItem::BeginPlay()
 	Sphere->OnComponentBeginOverlap.AddDynamic(this, &ALPBaseItem::OnSphereBeginOverlap);
 	Sphere->OnComponentEndOverlap.AddDynamic(this, &ALPBaseItem::OnSphereEndOverlap);
 
-	if (ItemState == EItemState::EIS_Hovering)
-	{
-		//GetWorldTimerManager().SetTimer(SineTimerHandle, this, &ALPBaseItem::SineMovement, SineTimerRate, true);
-	}
-
 	if (!IsStackable())
 	{
 		SlotData.MaxStackSize = 1;
@@ -44,6 +39,11 @@ void ALPBaseItem::BeginPlay()
 
 	SlotData.Value = SlotData.Value > SlotData.MaxStackSize ? SlotData.MaxStackSize : SlotData.Value;
 	SlotData.ItemClass = this->GetClass();
+
+	if (ItemState == EItemState::EIS_OnGround)
+	{
+		//GetWorldTimerManager().SetTimer(SineTimerHandle, this, &ALPBaseItem::SineMovement, SineTimerRate, true);
+	}
 
 	ItemMesh->OnComponentHit.AddDynamic(this, &ALPBaseItem::OnItemHit);
 }
@@ -61,7 +61,7 @@ void ALPBaseItem::SetItemState(EItemState NewState)
 {
 	ItemState = NewState;
 
-	if (NewState == EItemState::EIS_Hovering)
+	if (NewState == EItemState::EIS_OnGround)
 	{
 		//GetWorldTimerManager().SetTimer(SineTimerHandle, this, &ALPBaseItem::SineMovement, SineTimerRate, true);
 		if (EmbersEffect)

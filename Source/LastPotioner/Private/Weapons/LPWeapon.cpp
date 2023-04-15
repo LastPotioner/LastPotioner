@@ -87,7 +87,7 @@ void ALPWeapon::Equip(USceneComponent* InParent, AActor* NewOwner, APawn* NewIns
 		const FName InSocketName = DisarmSocketNames[WeaponType];
 		Sphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		AttachMeshToSocket(InParent, InSocketName);
-		SetItemState(EItemState::EIS_Equipped);
+		SetItemState(EItemState::EIS_Taken);
 		SetOwner(NewOwner);
 		SetInstigator(NewInstigator);
 		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());

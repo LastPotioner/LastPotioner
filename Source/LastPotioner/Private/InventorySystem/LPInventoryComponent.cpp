@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "InventorySystem/LPInventoryComponent.h"
-#include "InventorySystem/LPInventorySlot.h"
 #include "Items/LPBaseItem.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogInventoryComponent, All, All);
@@ -20,30 +19,24 @@ void ULPInventoryComponent::SwapSlots(int SelfSlotIndex, int SourceSlotIndex, UL
 		UE_LOG(LogInventoryComponent, Warning, TEXT("SourceInventory is null"));
 		return;
 	}
-	
-	InventoryContainer[SelfSlotIndex]->SwapWith(SourceInventory->GetSlotByIndex(SourceSlotIndex));
+
+	FItemSlotData DataBuf;
+	DataBuf.CopyFrom(InventoryContainer[SelfSlotIndex]);
+	SetSlotByIndex(SelfSlotIndex, SourceInventory->GetSlotByIndex(SourceSlotIndex));
+	SourceInventory->SetSlotByIndex(SourceSlotIndex, DataBuf);
+	SourceInventory->OnSlotChanged.Broadcast(SourceSlotIndex);
+	OnSlotChanged.Broadcast(SelfSlotIndex);
 }
 
-void ULPInventoryComponent::BeginPlay()
+const FItemSlotData& ULPInventoryComponent::GetSlotByIndex(int Index) const
 {
-	Super::BeginPlay();
-
-	for (int i = 0; i < InventoryContainer.Num(); i++)
-	{
-		InventoryContainer[i] = NewObject<ULPInventorySlot>();
-	}
-	OnSlotsCreated.Broadcast();
+	checkf(Index < InventoryContainer.Num(), TEXT("Index < InventoryContainer.Num()"));
+	return InventoryContainer[Index];
 }
 
-
-ULPInventorySlot* ULPInventoryComponent::GetSlotByIndex(int Index) const
+void ULPInventoryComponent::SetSlotByIndex(int Index, const FItemSlotData& NewData)
 {
-	if (Index < InventoryContainer.Num())
-	{
-		return InventoryContainer[Index];
-	}
-
-	return nullptr;
+	InventoryContainer[Index].CopyFrom(NewData);
 }
 
 int ULPInventoryComponent::AddItem(const ALPBaseItem* Item)
@@ -58,7 +51,7 @@ int ULPInventoryComponent::AddItem(const ALPBaseItem* Item)
 
 		if (SlotIndex != -1)
 		{
-			Overage = Value - AddItemInSlot(Item, SlotIndex);
+			Overage = Value - AddItemInSlot(Item->GetSlotData(), SlotIndex);
 		}
 		else
 		{
@@ -70,17 +63,28 @@ int ULPInventoryComponent::AddItem(const ALPBaseItem* Item)
 	return Value;
 }
 
-int ULPInventoryComponent::AddItemInSlot(const ALPBaseItem* Item, int SlotIndex)
+int ULPInventoryComponent::AddItemInSlot(const FItemSlotData& Item, int SlotIndex)
 {
-	if (!Item || Item->GetValue() < 0 || SlotIndex < 0) return 0;
+	if (Item.Value < 0 || SlotIndex < 0) return 0;
 
-	if (InventoryContainer[SlotIndex]->GetItemData().ID == -1)
+	if (InventoryContainer[SlotIndex].ID == -1)
 	{
-		InventoryContainer[SlotIndex]->InitializeSlot(Item->GetSlotData());
-		return Item->GetValue();
+		InitializeSlot(SlotIndex, Item);
+		return Item.Value;
 	}
+	
+	FItemSlotData& Slot = InventoryContainer[SlotIndex];
 
-	return InventoryContainer[SlotIndex]->AddItem(Item->GetSlotData());
+	const int Value = Item.Value;
+	if (Item.ID == -1) return 0;
+	if (Slot.ID != Item.ID || Slot.Value == Slot.MaxStackSize) return 0;
+
+	const int NewValue = Slot.Value + Value;
+	const int Overage = NewValue > Slot.MaxStackSize ? NewValue % Slot.MaxStackSize : 0;
+	Slot.Value = NewValue - Overage;
+	OnSlotChanged.Broadcast(SlotIndex);
+	
+	return Value - Overage;
 }
 
 int ULPInventoryComponent::FindSuitableSlot(const ALPBaseItem* Item)
@@ -88,21 +92,45 @@ int ULPInventoryComponent::FindSuitableSlot(const ALPBaseItem* Item)
 	if (!Item) return -1;
 
 	int FirstEmptySlot = -1;
-	
+
 	for (int i = 0; i < InventoryContainer.Num(); i++)
 	{
-		const ULPInventorySlot* Slot = InventoryContainer[i];
+		const FItemSlotData Slot = InventoryContainer[i];
 
-		if (Slot->GetItemData().ID == -1 && FirstEmptySlot == -1)
+		if (Slot.ID == -1 && FirstEmptySlot == -1)
 		{
 			FirstEmptySlot = i;
 		}
 
-		if (Slot->GetItemData().ID == Item->GetID() && !Slot->IsFull())
+		if (Slot.ID == Item->GetID() && Slot.Value != Slot.MaxStackSize)
 		{
 			return i;
 		}
 	}
 
 	return FirstEmptySlot;
+}
+
+void ULPInventoryComponent::SubtractSlotValue(int SlotIndex, int Value)
+{
+	FItemSlotData& SlotData = InventoryContainer[SlotIndex];
+	SlotData.Value -= Value;
+	OnSlotChanged.Broadcast(SlotIndex);
+
+	if (SlotData.Value == 0)
+	{
+		SetSlotEmpty(SlotIndex);
+	}
+}
+
+void ULPInventoryComponent::SetSlotEmpty(int SlotIndex)
+{
+	InventoryContainer[SlotIndex] = FItemSlotData();
+	OnSlotChanged.Broadcast(SlotIndex);
+}
+
+void ULPInventoryComponent::InitializeSlot(int SlotIndex, const FItemSlotData& Item)
+{
+	InventoryContainer[SlotIndex] = Item;
+	OnSlotChanged.Broadcast(SlotIndex);
 }
