@@ -13,6 +13,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "InventorySystem/LPInventoryComponent.h"
 #include "Interfaces/Interactable.h"
+#include "String/Escape.h"
 
 ALPCharacter::ALPCharacter()
 {
@@ -107,6 +108,8 @@ void ALPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 			EquipAction, ETriggerEvent::Triggered, this, &ALPCharacter::ArmWeapon);
 		EnhancedInputComponent->BindAction(
 			PickUpAction, ETriggerEvent::Triggered, this, &ALPCharacter::PickUpOverlappingItem);
+		EnhancedInputComponent->BindAction(
+			EscapeAction, ETriggerEvent::Triggered, this, &ALPCharacter::HandleEscape);
 	}
 }
 
@@ -166,6 +169,10 @@ void ALPCharacter::ContinueArm()
 	}
 
 	OnCharacterStateChanged.Broadcast(CharacterState);
+}
+
+void ALPCharacter::HandleEscape_Implementation()
+{
 }
 
 void ALPCharacter::ArmWeapon()
@@ -270,4 +277,9 @@ int ALPCharacter::AddItemToInventory(const ALPBaseItem* Item) const
 	if (!InventoryComponent) return 0;
 
 	return InventoryComponent->AddItem(Item);
+}
+
+void ALPCharacter::SetOpenedStorage(AActor* Storage)
+{
+	OpenedStorage = Storage;
 }

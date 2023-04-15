@@ -4,6 +4,8 @@
 #include "InventorySystem/LPInventorySlot.h"
 #include "Items/LPBaseItem.h"
 
+DEFINE_LOG_CATEGORY_STATIC(LogInventoryComponent, All, All);
+
 struct FItemSlotData;
 
 ULPInventoryComponent::ULPInventoryComponent()
@@ -11,10 +13,15 @@ ULPInventoryComponent::ULPInventoryComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
-void ULPInventoryComponent::SwapSlots(int FirstIndex, int SecondIndex)
+void ULPInventoryComponent::SwapSlots(int SelfSlotIndex, int SourceSlotIndex, ULPInventoryComponent* SourceInventory)
 {
-	UE_LOG(LogTemp, Display, TEXT("Swap1"));
-	InventoryContainer[FirstIndex]->SwapWith(InventoryContainer[SecondIndex]);
+	if (!SourceInventory)
+	{
+		UE_LOG(LogInventoryComponent, Warning, TEXT("SourceInventory is null"));
+		return;
+	}
+	
+	InventoryContainer[SelfSlotIndex]->SwapWith(SourceInventory->GetSlotByIndex(SourceSlotIndex));
 }
 
 void ULPInventoryComponent::BeginPlay()
@@ -25,12 +32,11 @@ void ULPInventoryComponent::BeginPlay()
 	{
 		InventoryContainer[i] = NewObject<ULPInventorySlot>();
 	}
-
 	OnSlotsCreated.Broadcast();
 }
 
 
-const ULPInventorySlot* ULPInventoryComponent::GetSlotByIndex(int Index) const
+ULPInventorySlot* ULPInventoryComponent::GetSlotByIndex(int Index) const
 {
 	if (Index < InventoryContainer.Num())
 	{

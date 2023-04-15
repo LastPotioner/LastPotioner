@@ -39,7 +39,16 @@ public:
 
 	int AddItemToInventory(const ALPBaseItem* Item) const;
 
+	UFUNCTION(BlueprintCallable)
+	void SetOpenedStorage(AActor* Storage);
+
 protected:
+	UPROPERTY(BlueprintReadOnly)
+	AActor* OpenedStorage;
+
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
+	ULPInventoryComponent* InventoryComponent;
+	
 	virtual void BeginPlay() override;
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
@@ -58,12 +67,12 @@ protected:
 
 	void ContinueArm();
 
+	UFUNCTION(BlueprintNativeEvent)
+	void HandleEscape();
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	AActor* CurrentInteractable;
-
-	UPROPERTY(BlueprintReadOnly, VisibleAnywhere, meta=(AllowPrivateAccess="true"))
-	ULPInventoryComponent* InventoryComponent;
 	
 	UPROPERTY(VisibleAnywhere)
 	EActionState ActionState = EActionState::EAS_Unoccupied;
@@ -109,6 +118,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* EquipAction;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* EscapeAction;
 
 	/*
 	 * Appearance

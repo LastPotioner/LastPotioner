@@ -29,13 +29,13 @@ public:
 	int GetSlotsNum() const { return InventoryContainer.Num(); }
 
 	UFUNCTION(BlueprintCallable)
-	const ULPInventorySlot* GetSlotByIndex(int Index) const;
+	ULPInventorySlot* GetSlotByIndex(int Index) const;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnSlotsCreatedSignature OnSlotsCreated;
 
 	UFUNCTION(BlueprintCallable)
-	void SwapSlots(int FirstIndex, int SecondIndex);
+	void SwapSlots(int FirstIndex, int SecondIndex, ULPInventoryComponent* SourceInventory);
 
 protected:
 	virtual void BeginPlay() override;

@@ -39,6 +39,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnSlotChangedSignature OnSlotChanged;
 
+	UFUNCTION(BlueprintCallable)
 	void SwapWith(ULPInventorySlot* SlotForSwap);
 
 private:

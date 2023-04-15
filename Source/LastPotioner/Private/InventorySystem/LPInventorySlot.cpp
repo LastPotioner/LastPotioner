@@ -11,7 +11,7 @@ int ULPInventorySlot::AddItem(const FItemSlotData& Item)
 
 	const int NewValue = ItemData.Value + Value;
 	const int Overage = NewValue > ItemData.MaxStackSize ? NewValue % ItemData.MaxStackSize : 0;
-	ItemData.Value = Overage > 0 ? ItemData.MaxStackSize : NewValue;
+	ItemData.Value = NewValue - Overage;
 	OnSlotChanged.Broadcast();
 	return Value - Overage;
 }
