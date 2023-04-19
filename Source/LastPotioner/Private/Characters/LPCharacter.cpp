@@ -32,7 +32,7 @@ ALPCharacter::ALPCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Visibility, ECollisionResponse::ECR_Block);
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
-	GetMesh()->SetupAttachment(Camera);
+	GetMesh()->SetupAttachment(GetRootComponent());
 }
 
 void ALPCharacter::BeginPlay()
@@ -121,14 +121,8 @@ void ALPCharacter::Move(const FInputActionValue& Value)
 
 	if (!InputVector.IsNearlyZero())
 	{
-		const FRotator ControlRotation = GetControlRotation();
-		const FRotator YawControlRotation = FRotator(0.0, ControlRotation.Yaw, 0.0);
-
-		const FVector ForwardVector = FRotationMatrix(YawControlRotation).GetUnitAxis(EAxis::X);
-		AddMovementInput(ForwardVector, InputVector.X * GetWorld()->GetDeltaSeconds() * Speed);
-
-		const FVector RightVector = FRotationMatrix(YawControlRotation).GetUnitAxis(EAxis::Y);
-		AddMovementInput(RightVector, InputVector.Y * GetWorld()->GetDeltaSeconds() * Speed);
+		AddMovementInput(GetActorForwardVector(), InputVector.X * GetWorld()->GetDeltaSeconds() * Speed);
+		AddMovementInput(GetActorRightVector(), InputVector.Y * GetWorld()->GetDeltaSeconds() * Speed);
 	}
 }
 
