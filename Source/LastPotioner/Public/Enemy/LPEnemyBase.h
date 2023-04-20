@@ -41,7 +41,7 @@ protected:
 	void StopChase();
 	virtual bool CanAttack() const override;
 	virtual void Attack() override;
-	virtual void AttackEnd() override;
+	virtual void OnAttackEnd() override;
 	virtual void PlayDeathAnimMontage() override;
 	virtual void Die() override;
 

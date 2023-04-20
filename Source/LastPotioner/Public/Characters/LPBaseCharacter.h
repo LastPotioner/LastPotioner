@@ -57,7 +57,7 @@ protected:
 	virtual void Attack();
 
 	UFUNCTION(BlueprintCallable)
-	virtual void AttackEnd();
+	virtual void OnAttackEnd();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Animation")
 	UAnimMontage* DeathMontage;

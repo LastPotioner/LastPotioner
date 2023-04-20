@@ -55,22 +55,25 @@ protected:
 	void PickUpOverlappingItem();
 	virtual bool CanAttack() const override;
 	virtual void Attack() override;
-	virtual void AttackEnd() override;
-	void ArmWeapon();
+	virtual void OnAttackEnd() override;
+	void HandleWeaponAction();
 	void DisarmWeapon();
+	
+	UFUNCTION(BlueprintCallable)
+	void OnDisarmEnd();
 
 	UFUNCTION(BlueprintCallable)
-	void DisarmEnd();
+	void OnArmEnd();
 
-	UFUNCTION(BlueprintCallable)
-	void ArmStart();
-
-	void ContinueArm();
+	void ArmWeapon();
 
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleEscape();
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	float MaxMovementSpeed = 600.0f;
+	
 	UPROPERTY(VisibleAnywhere)
 	AActor* CurrentInteractable;
 	
@@ -80,7 +83,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	USpringArmComponent* SpringArm1;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditDefaultsOnly)
 	UCameraComponent* Camera;
 
 	int8 CurrentWeaponPosition = 0;
