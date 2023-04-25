@@ -24,6 +24,8 @@ ALPWeapon::ALPWeapon()
 
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Trace End"));
 	BoxTraceEnd->SetupAttachment(GetRootComponent());
+
+	ItemMesh->SetSimulatePhysics(false);
 }
 
 void ALPWeapon::BeginPlay()

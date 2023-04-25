@@ -93,7 +93,7 @@ void ALPBaseCharacter::Attack()
 {
 }
 
-void ALPBaseCharacter::AttackEnd()
+void ALPBaseCharacter::OnAttackEnd()
 {
 }
 

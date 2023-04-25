@@ -20,10 +20,10 @@ public:
 	virtual void NativeUpdateAnimation(float DeltaTime) override;
 
 	UPROPERTY(BlueprintReadOnly)
-	ALPCharacter* SlashCharacter;
+	ALPCharacter* LPCharacter;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
-	UCharacterMovementComponent* SlashCharacterMovement;
+	UCharacterMovementComponent* LPCharacterMovement;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Movement")
 	float GroundSpeed;

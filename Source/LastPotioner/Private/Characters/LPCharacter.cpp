@@ -18,10 +18,11 @@
 ALPCharacter::ALPCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
-
+	/*
 	Camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
-	Camera->SetupAttachment(GetRootComponent());
+	Camera->SetupAttachment(GetMesh());
 	Camera->bUsePawnControlRotation = true;
+	*/
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 
@@ -49,6 +50,8 @@ void ALPCharacter::BeginPlay()
 			Subsystem->AddMappingContext(LPMappingContext, 0);
 		}
 	}
+
+	Camera = Cast<UCameraComponent>(GetComponentByClass(UCameraComponent::StaticClass()));
 }
 
 void ALPCharacter::CheckForInteractables()
@@ -105,7 +108,7 @@ void ALPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::Attack);
 		EnhancedInputComponent->BindAction(
-			EquipAction, ETriggerEvent::Triggered, this, &ALPCharacter::ArmWeapon);
+			EquipAction, ETriggerEvent::Triggered, this, &ALPCharacter::HandleWeaponAction);
 		EnhancedInputComponent->BindAction(
 			PickUpAction, ETriggerEvent::Triggered, this, &ALPCharacter::PickUpOverlappingItem);
 		EnhancedInputComponent->BindAction(
@@ -147,9 +150,9 @@ void ALPCharacter::PickUpOverlappingItem()
 	}
 }
 
-void ALPCharacter::ContinueArm()
+void ALPCharacter::ArmWeapon()
 {
-	PlayAnimMontage(EquipAnimMontage, 1.0f, FName("Equip"));
+	PlayAnimMontage(EquipAnimMontage, 1.0f, FName("Arm"));
 	CurrentWeapon = EquippedWeapons[CurrentWeaponPosition];
 
 	switch (CurrentWeapon->GetWeaponType())
@@ -169,42 +172,44 @@ void ALPCharacter::HandleEscape_Implementation()
 {
 }
 
-void ALPCharacter::ArmWeapon()
+void ALPCharacter::HandleWeaponAction()
 {
 	if (EquippedWeapons.Num() == 0 || ActionState != EActionState::EAS_Unoccupied) return;
-	if (EquippedWeapons.Num() == 1 && CurrentWeapon) return; // if the only weapon is equipped
+	//if (EquippedWeapons.Num() == 1 && CurrentWeapon) return; // if the only weapon is equipped
 
 	ActionState = EActionState::EAS_ArmingWeapon;
+	GetCharacterMovement()->MaxWalkSpeed = MaxMovementSpeed / 2.0f;
 
 	CurrentWeaponPosition = 0;
 	if (CurrentWeapon)
 	{
 		CurrentWeaponPosition = EquippedWeapons.IndexOfByKey(CurrentWeapon);
 		CurrentWeaponPosition = (CurrentWeaponPosition + 1) % EquippedWeapons.Num();
-		ActionState = EActionState::EAS_DisarmingBeforeArming;
+		if (EquippedWeapons[CurrentWeaponPosition] != CurrentWeapon)
+		{
+			ActionState = EActionState::EAS_DisarmingBeforeArming;
+		}
+		else
+		{
+			ActionState = EActionState::EAS_DisarmingWeapon;
+		}
+		
 		DisarmWeapon();
 		return;
 	}
 
-	ContinueArm();
+	ArmWeapon();
 }
 
 void ALPCharacter::DisarmWeapon()
 {
 	if (!CurrentWeapon) return;
-	if (ActionState != EActionState::EAS_DisarmingBeforeArming
-		&& ActionState != EActionState::EAS_Unoccupied)
-		return;
+	if (ActionState < EActionState::EAS_DisarmingWeapon && ActionState != EActionState::EAS_Unoccupied) return;
 
-	if (ActionState != EActionState::EAS_DisarmingBeforeArming)
-	{
-		ActionState = EActionState::EAS_DisarmingWeapon;
-	}
-
-	PlayAnimMontage(EquipAnimMontage, 1.0f, FName("Unequip"));
+	PlayAnimMontage(EquipAnimMontage, 1.0f, FName("Disarm"));
 }
 
-void ALPCharacter::DisarmEnd()
+void ALPCharacter::OnDisarmEnd()
 {
 	if (CurrentWeapon)
 	{
@@ -213,20 +218,22 @@ void ALPCharacter::DisarmEnd()
 
 		if (ActionState == EActionState::EAS_DisarmingBeforeArming)
 		{
-			ContinueArm();
+			ArmWeapon();
 			return;
 		}
-
+		
+		GetCharacterMovement()->MaxWalkSpeed = MaxMovementSpeed;
 		ActionState = EActionState::EAS_Unoccupied;
 		CharacterState = ECharacterState::ECS_Unequipped;
 		OnCharacterStateChanged.Broadcast(CharacterState);
 	}
 }
 
-void ALPCharacter::ArmStart()
+void ALPCharacter::OnArmEnd()
 {
 	if (CurrentWeapon)
 	{
+		GetCharacterMovement()->MaxWalkSpeed = MaxMovementSpeed;
 		CurrentWeapon->Arm();
 		ActionState = EActionState::EAS_Unoccupied;
 	}
@@ -236,15 +243,15 @@ void ALPCharacter::Attack()
 {
 	if (CanAttack())
 	{
-		//GetCharacterMovement()->SetMovementMode(MOVE_None);
+		GetCharacterMovement()->SetMovementMode(MOVE_None);
 		ActionState = EActionState::EAS_Attacking;
 		PlayAttackMontage();
 	}
 }
 
-void ALPCharacter::AttackEnd()
+void ALPCharacter::OnAttackEnd()
 {
-	//GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	ActionState = EActionState::EAS_Unoccupied;
 }
 

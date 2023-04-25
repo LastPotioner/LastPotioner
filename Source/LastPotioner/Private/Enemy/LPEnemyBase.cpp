@@ -224,7 +224,7 @@ void ALPEnemyBase::Attack()
 }
 
 
-void ALPEnemyBase::AttackEnd()
+void ALPEnemyBase::OnAttackEnd()
 {
 	SetEnemyState(EEnemyState::EES_NoState);
 	CheckCombatTarget();
@@ -291,7 +291,7 @@ void ALPEnemyBase::OnAttackMontageInterrupted(UAnimMontage* Montage, bool bInter
 {
 	if (Montage == OneHandedAttackMontage && bInterrupted)
 	{
-		AttackEnd();
+		OnAttackEnd();
 	}
 }
 

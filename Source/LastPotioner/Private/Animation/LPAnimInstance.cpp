@@ -10,11 +10,11 @@ void ULPAnimInstance::NativeInitializeAnimation()
 {
 	Super::NativeInitializeAnimation();
 
-	SlashCharacter = Cast<ALPCharacter>(TryGetPawnOwner());
-	if (SlashCharacter)
+	LPCharacter = Cast<ALPCharacter>(TryGetPawnOwner());
+	if (LPCharacter)
 	{
-		SlashCharacterMovement = SlashCharacter->GetCharacterMovement();
-		SlashCharacter->OnCharacterStateChanged.AddUObject(this, &ULPAnimInstance::OnCharacterStateChanged);
+		LPCharacterMovement = LPCharacter->GetCharacterMovement();
+		LPCharacter->OnCharacterStateChanged.AddUObject(this, &ULPAnimInstance::OnCharacterStateChanged);
 	}
 }
 
@@ -22,12 +22,12 @@ void ULPAnimInstance::NativeUpdateAnimation(float DeltaTime)
 {
 	Super::NativeUpdateAnimation(DeltaTime);
 
-	if (SlashCharacterMovement)
+	if (LPCharacterMovement)
 	{
-		GroundSpeed = UKismetMathLibrary::VSizeXY(SlashCharacterMovement->Velocity);
+		GroundSpeed = UKismetMathLibrary::VSizeXY(LPCharacterMovement->Velocity);
 		
-		IsFalling = SlashCharacterMovement->IsFalling();
-		IsStanding = SlashCharacterMovement->Velocity.Size() == 0;
+		IsFalling = LPCharacterMovement->IsFalling();
+		IsStanding = LPCharacterMovement->Velocity.Size() == 0;
 	}
 }
 
