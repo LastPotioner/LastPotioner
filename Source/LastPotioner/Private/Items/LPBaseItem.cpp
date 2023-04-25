@@ -129,3 +129,8 @@ void ALPBaseItem::AddForce(const FVector& Force)
 {
 	ItemMesh->AddForce(Force, NAME_None, true);
 }
+
+void ALPBaseItem::ToggleMeshVisibility() const
+{
+	ItemMesh->ToggleVisibility();
+}

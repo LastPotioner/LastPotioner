@@ -77,7 +77,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	AActor* CurrentInteractable;
 	
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	UPROPERTY(VisibleAnywhere)
@@ -90,6 +90,9 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<ALPWeapon*> EquippedWeapons;
+
+	UFUNCTION(BlueprintCallable)
+	void ToggleCurrentWeaponVisibility() const;
 
 	/*
 	 * Enhanced input actions and their parameters

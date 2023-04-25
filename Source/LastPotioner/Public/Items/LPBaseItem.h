@@ -75,6 +75,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void AddForce(const FVector& Force);
 
+	void ToggleMeshVisibility() const;
+
 protected:
 	virtual void BeginPlay() override;
 

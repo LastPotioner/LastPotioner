@@ -168,6 +168,14 @@ void ALPCharacter::ArmWeapon()
 	OnCharacterStateChanged.Broadcast(CharacterState);
 }
 
+void ALPCharacter::ToggleCurrentWeaponVisibility() const
+{
+	if (CurrentWeapon)
+	{
+		CurrentWeapon->ToggleMeshVisibility();
+	}
+}
+
 void ALPCharacter::HandleEscape_Implementation()
 {
 }
