@@ -101,6 +101,9 @@ protected:
 	                                UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	bool bShouldPlaySineMovement = false;
+	
 	FTimerHandle SineTimerHandle;
 	float SineTimerRate = 0.005;
 	float TimePassed = 0;

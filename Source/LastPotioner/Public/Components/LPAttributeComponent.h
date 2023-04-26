@@ -6,7 +6,6 @@
 #include "Components/ActorComponent.h"
 #include "LPAttributeComponent.generated.h"
 
-
 UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class LASTPOTIONER_API ULPAttributeComponent : public UActorComponent
 {
@@ -14,6 +13,14 @@ class LASTPOTIONER_API ULPAttributeComponent : public UActorComponent
 
 public:
 	ULPAttributeComponent();
+
+	void ReceiveDamage(float Damage);
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE float GetHealthPercent() const { return Health / MaxHealth; }
+
+	UFUNCTION(BlueprintCallable)
+	FORCEINLINE bool IsAlive() const { return Health > 0; }
 
 protected:
 	virtual void BeginPlay() override;
@@ -24,10 +31,4 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Actor Acttributes")
 	float MaxHealth = 100.0f;
-
-public:
-	void ReceiveDamage(float Damage);
-
-	FORCEINLINE float GetHealthPercent() const { return Health / MaxHealth; }
-	FORCEINLINE bool IsAlive() const { return Health > 0; }
 };

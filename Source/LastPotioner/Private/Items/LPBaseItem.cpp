@@ -40,9 +40,9 @@ void ALPBaseItem::BeginPlay()
 	SlotData.Value = SlotData.Value > SlotData.MaxStackSize ? SlotData.MaxStackSize : SlotData.Value;
 	SlotData.ItemClass = this->GetClass();
 
-	if (ItemState == EItemState::EIS_OnGround)
+	if (ItemState == EItemState::EIS_OnGround && bShouldPlaySineMovement)
 	{
-		//GetWorldTimerManager().SetTimer(SineTimerHandle, this, &ALPBaseItem::SineMovement, SineTimerRate, true);
+		GetWorldTimerManager().SetTimer(SineTimerHandle, this, &ALPBaseItem::SineMovement, SineTimerRate, true);
 	}
 
 	ItemMesh->OnComponentHit.AddDynamic(this, &ALPBaseItem::OnItemHit);
@@ -63,7 +63,10 @@ void ALPBaseItem::SetItemState(EItemState NewState)
 
 	if (NewState == EItemState::EIS_OnGround)
 	{
-		//GetWorldTimerManager().SetTimer(SineTimerHandle, this, &ALPBaseItem::SineMovement, SineTimerRate, true);
+		if (bShouldPlaySineMovement)
+		{
+			GetWorldTimerManager().SetTimer(SineTimerHandle, this, &ALPBaseItem::SineMovement, SineTimerRate, true);
+		}
 		if (EmbersEffect)
 		{
 			EmbersEffect->Activate();

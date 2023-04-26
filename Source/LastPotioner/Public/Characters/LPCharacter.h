@@ -9,6 +9,7 @@
 #include "Characters/CharacterTypes.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Camera/CameraComponent.h"
+#include "Components/LPAttributeComponent.h"
 #include "LPCharacter.generated.h"
 
 class UInputAction;
@@ -42,13 +43,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetOpenedStorage(AActor* Storage);
 
+	UFUNCTION(BlueprintCallable)
+	float GetHealthPercent() { return AttributeComponent->GetHealthPercent(); }
+
 protected:
 	UPROPERTY(BlueprintReadOnly)
 	AActor* OpenedStorage;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	ULPInventoryComponent* InventoryComponent;
-	
+
 	virtual void BeginPlay() override;
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
@@ -58,7 +62,7 @@ protected:
 	virtual void OnAttackEnd() override;
 	void HandleWeaponAction();
 	void DisarmWeapon();
-	
+
 	UFUNCTION(BlueprintCallable)
 	void OnDisarmEnd();
 
@@ -72,17 +76,17 @@ protected:
 
 	UFUNCTION()
 	void StrongAttack();
-	
+
 	UFUNCTION()
 	void JumpAttack();
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxMovementSpeed = 600.0f;
-	
+
 	UPROPERTY(VisibleAnywhere)
 	AActor* CurrentInteractable;
-	
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
 
@@ -136,7 +140,7 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* EquipAction;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* EscapeAction;
 
