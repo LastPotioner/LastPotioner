@@ -45,7 +45,7 @@ void ALPEnemyBase::BeginPlay()
 
 	EnemyController = Cast<AAIController>(GetController());
 
-	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ALPEnemyBase::OnAttackMontageInterrupted);
+	GetMesh()->GetAnimInstance()->OnMontageEnded.AddDynamic(this, &ALPEnemyBase::OnAnyMontageInterrupted);
 
 	SetHealthBarVisibility(false);
 	if (AttributeComponent && HealthBarComponent)
@@ -189,7 +189,7 @@ void ALPEnemyBase::StartAttackTimer()
 {
 	SetEnemyState(EEnemyState::EES_Attacking);
 	const float AttackTime = FMath::RandRange(AttackWaitingMin, AttackWaitingMax);
-	GetWorldTimerManager().SetTimer(AttackTimer, this, &ALPEnemyBase::Attack, AttackTime);
+	GetWorldTimerManager().SetTimer(AttackTimer, this, &ALPEnemyBase::FastAttack, AttackTime);
 }
 
 void ALPEnemyBase::LoseInterest()
@@ -215,12 +215,12 @@ void ALPEnemyBase::StopChase()
 	CheckPatrolTarget();
 }
 
-void ALPEnemyBase::Attack()
+void ALPEnemyBase::FastAttack()
 {
 	if (CombatTarget == nullptr) return;
 
 	SetEnemyState(EEnemyState::EES_Engaged);
-	PlayAttackMontage();
+	PlayFastAttackMontage();
 }
 
 
@@ -232,6 +232,8 @@ void ALPEnemyBase::OnAttackEnd()
 
 void ALPEnemyBase::OnSeePawn(APawn* Pawn)
 {
+	if (!Pawn || !Pawn->ActorHasTag("LPCharacter") || EnemyState == EEnemyState::EES_Dead) return;
+	
 	const bool bShouldChaseTarget =
 		EnemyState != EEnemyState::EES_Dead &&
 		EnemyState != EEnemyState::EES_Chasing &&
@@ -252,7 +254,7 @@ void ALPEnemyBase::MoveToTarget(const AActor* Target) const
 
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
-	MoveRequest.SetAcceptanceRadius(55.0f);
+	MoveRequest.SetAcceptanceRadius(60.0f);
 	EnemyController->MoveTo(MoveRequest);
 }
 
@@ -287,7 +289,7 @@ void ALPEnemyBase::SetEnemyState(EEnemyState NewState)
 	}
 }
 
-void ALPEnemyBase::OnAttackMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
+void ALPEnemyBase::OnAnyMontageInterrupted(UAnimMontage* Montage, bool bInterrupted)
 {
 	if (Montage == OneHandedAttackMontage && bInterrupted)
 	{
@@ -297,10 +299,6 @@ void ALPEnemyBase::OnAttackMontageInterrupted(UAnimMontage* Montage, bool bInter
 
 void ALPEnemyBase::GetHit_Implementation(const FHitResult& HitResult)
 {
-	if (!GetWorld()) return;
-
-	SetHealthBarVisibility(true);
-
 	Super::GetHit_Implementation(HitResult);
 }
 
@@ -337,10 +335,9 @@ float ALPEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if (EventInstigator->GetPawn()->ActorHasTag("SlashCharacter") && !CombatTarget)
+	if (!CombatTarget)
 	{
-		CombatTarget = EventInstigator->GetPawn();
-		CheckCombatTarget();
+		OnSeePawn(EventInstigator->GetPawn());
 	}
 
 	return DamageAmount;

@@ -36,13 +36,13 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	ULPAttributeComponent* AttributeComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	ALPWeapon* CurrentWeapon;
 
-	void PlayAttackMontage();
+	void PlayFastAttackMontage();
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* OneHandedAttackMontage;
@@ -54,7 +54,7 @@ protected:
 	void SetWeaponCollisionEnabled(bool CollisionEnabled) const;
 
 	virtual bool CanAttack() const;
-	virtual void Attack();
+	virtual void FastAttack();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnAttackEnd();

@@ -12,6 +12,7 @@ ALPBaseCharacter::ALPBaseCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	AttributeComponent = CreateDefaultSubobject<ULPAttributeComponent>(TEXT("AttributeComponent"));
+	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);	
 }
 
 void ALPBaseCharacter::BeginPlay()
@@ -53,7 +54,7 @@ bool ALPBaseCharacter::IsAlive() const
 	return AttributeComponent && AttributeComponent->IsAlive();
 }
 
-void ALPBaseCharacter::PlayAttackMontage()
+void ALPBaseCharacter::PlayFastAttackMontage()
 {
 	if (!CurrentWeapon || (!OneHandedAttackMontage && !TwoHandedAttackMontage)) return;
 
@@ -89,7 +90,7 @@ bool ALPBaseCharacter::CanAttack() const
 	return false;
 }
 
-void ALPBaseCharacter::Attack()
+void ALPBaseCharacter::FastAttack()
 {
 }
 

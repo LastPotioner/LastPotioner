@@ -7,8 +7,8 @@
 #include "Components/SphereComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "DrawDebugHelpers.h"
 #include "GameFramework/Character.h"
+#include "Engine/World.h"
 #include "Interfaces/HitInterface.h"
 
 ALPWeapon::ALPWeapon()
@@ -64,7 +64,7 @@ void ALPWeapon::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAct
 		TraceEnd,
 		FVector(5.f, 5.f, 5.f),
 		BoxTraceStart->GetComponentRotation(),
-		ETraceTypeQuery::TraceTypeQuery1,
+		UEngineTypes::ConvertToTraceType(ECollisionChannel::ECC_GameTraceChannel1),
 		false,
 		ActorsToIgnore,
 		EDrawDebugTrace::None,

@@ -40,7 +40,7 @@ protected:
 	void ChaseTarget();
 	void StopChase();
 	virtual bool CanAttack() const override;
-	virtual void Attack() override;
+	virtual void FastAttack() override;
 	virtual void OnAttackEnd() override;
 	virtual void PlayDeathAnimMontage() override;
 	virtual void Die() override;
@@ -52,7 +52,7 @@ private:
 	void SetEnemyState(EEnemyState NewState);
 
 	UFUNCTION()
-	void OnAttackMontageInterrupted(UAnimMontage* Montage, bool bInterrupted);
+	void OnAnyMontageInterrupted(UAnimMontage* Montage, bool bInterrupted);
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<ALPWeapon> WeaponClass;

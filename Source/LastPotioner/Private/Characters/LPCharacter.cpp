@@ -40,7 +40,7 @@ void ALPCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Tags.Add(FName("SlashCharacter"));
+	Tags.Add(FName("LPCharacter"));
 
 	if (const APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
@@ -60,7 +60,7 @@ void ALPCharacter::CheckForInteractables()
 	{
 		const FVector Start = Camera->GetComponentLocation();
 		const FVector End = Start + Camera->GetForwardVector() * 1000.0f;
-		
+
 		FHitResult HitResult;
 		const bool HasHit = UKismetSystemLibrary::SphereTraceSingle(this, Start, End, 20.0f,
 		                                                            ETraceTypeQuery::TraceTypeQuery1, false, {},
@@ -106,13 +106,17 @@ void ALPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALPCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALPCharacter::Look);
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::Attack);
+		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::FastAttack);
 		EnhancedInputComponent->BindAction(
 			EquipAction, ETriggerEvent::Triggered, this, &ALPCharacter::HandleWeaponAction);
 		EnhancedInputComponent->BindAction(
 			PickUpAction, ETriggerEvent::Triggered, this, &ALPCharacter::PickUpOverlappingItem);
 		EnhancedInputComponent->BindAction(
 			EscapeAction, ETriggerEvent::Triggered, this, &ALPCharacter::HandleEscape);
+		EnhancedInputComponent->BindAction(
+			StrongAttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::StrongAttack);
+		EnhancedInputComponent->BindAction(
+			JumpAttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::JumpAttack);
 	}
 }
 
@@ -124,8 +128,8 @@ void ALPCharacter::Move(const FInputActionValue& Value)
 
 	if (!InputVector.IsNearlyZero())
 	{
-		AddMovementInput(GetActorForwardVector(), InputVector.X * GetWorld()->GetDeltaSeconds() * Speed);
-		AddMovementInput(GetActorRightVector(), InputVector.Y * GetWorld()->GetDeltaSeconds() * Speed);
+		AddMovementInput(GetActorForwardVector(), InputVector.X * GetWorld()->GetDeltaSeconds() * MaxWalkSpeed);
+		AddMovementInput(GetActorRightVector(), InputVector.Y * GetWorld()->GetDeltaSeconds() * MaxWalkSpeed);
 	}
 }
 
@@ -153,19 +157,6 @@ void ALPCharacter::PickUpOverlappingItem()
 void ALPCharacter::ArmWeapon()
 {
 	PlayAnimMontage(EquipAnimMontage, 1.0f, FName("Arm"));
-	CurrentWeapon = EquippedWeapons[CurrentWeaponPosition];
-
-	switch (CurrentWeapon->GetWeaponType())
-	{
-	case EWeaponType::EWT_OneHanded:
-		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-		break;
-	case EWeaponType::EWT_TwoHanded:
-		CharacterState = ECharacterState::ECS_EquippedTwoHandedWeapon;
-		break;
-	}
-
-	OnCharacterStateChanged.Broadcast(CharacterState);
 }
 
 void ALPCharacter::ToggleCurrentWeaponVisibility() const
@@ -186,7 +177,7 @@ void ALPCharacter::HandleWeaponAction()
 	//if (EquippedWeapons.Num() == 1 && CurrentWeapon) return; // if the only weapon is equipped
 
 	ActionState = EActionState::EAS_ArmingWeapon;
-	GetCharacterMovement()->MaxWalkSpeed = MaxMovementSpeed / 2.0f;
+	GetCharacterMovement()->MaxWalkSpeed = MaxMovementSpeed / 3.0f;
 
 	CurrentWeaponPosition = 0;
 	if (CurrentWeapon)
@@ -201,7 +192,7 @@ void ALPCharacter::HandleWeaponAction()
 		{
 			ActionState = EActionState::EAS_DisarmingWeapon;
 		}
-		
+
 		DisarmWeapon();
 		return;
 	}
@@ -229,7 +220,7 @@ void ALPCharacter::OnDisarmEnd()
 			ArmWeapon();
 			return;
 		}
-		
+
 		GetCharacterMovement()->MaxWalkSpeed = MaxMovementSpeed;
 		ActionState = EActionState::EAS_Unoccupied;
 		CharacterState = ECharacterState::ECS_Unequipped;
@@ -239,26 +230,63 @@ void ALPCharacter::OnDisarmEnd()
 
 void ALPCharacter::OnArmEnd()
 {
+	CurrentWeapon = EquippedWeapons[CurrentWeaponPosition];
+
 	if (CurrentWeapon)
 	{
+		switch (CurrentWeapon->GetWeaponType())
+		{
+		case EWeaponType::EWT_OneHanded:
+			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+			break;
+		case EWeaponType::EWT_TwoHanded:
+			CharacterState = ECharacterState::ECS_EquippedTwoHandedWeapon;
+			break;
+		}
+
+		OnCharacterStateChanged.Broadcast(CharacterState);
 		GetCharacterMovement()->MaxWalkSpeed = MaxMovementSpeed;
 		CurrentWeapon->Arm();
 		ActionState = EActionState::EAS_Unoccupied;
 	}
 }
 
-void ALPCharacter::Attack()
+void ALPCharacter::FastAttack()
+{
+	if (CanAttack())
+	{
+		GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed / 2.0f;
+		ActionState = EActionState::EAS_Attacking;
+		PlayFastAttackMontage();
+	}
+}
+
+void ALPCharacter::StrongAttack()
+{
+	/*
+	 * TODO: implement enum 'AttackType'
+	 */
+	if (CanAttack())
+	{
+		GetCharacterMovement()->SetMovementMode(MOVE_None);
+		ActionState = EActionState::EAS_Attacking;
+		PlayAnimMontage(StrongAttackMontage);
+	}
+}
+
+void ALPCharacter::JumpAttack()
 {
 	if (CanAttack())
 	{
 		GetCharacterMovement()->SetMovementMode(MOVE_None);
 		ActionState = EActionState::EAS_Attacking;
-		PlayAttackMontage();
+		PlayAnimMontage(JumpAttackMontage);
 	}
 }
 
 void ALPCharacter::OnAttackEnd()
 {
+	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 	ActionState = EActionState::EAS_Unoccupied;
 }
@@ -275,7 +303,8 @@ void ALPCharacter::GetHit_Implementation(const FHitResult& HitResult)
 
 void ALPCharacter::Interact()
 {
-	if (CurrentInteractable && UKismetSystemLibrary::DoesImplementInterface(CurrentInteractable, UInteractable::StaticClass()))
+	if (CurrentInteractable && UKismetSystemLibrary::DoesImplementInterface(
+		CurrentInteractable, UInteractable::StaticClass()))
 	{
 		IInteractable::Execute_Interact(CurrentInteractable, this);
 	}

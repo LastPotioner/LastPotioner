@@ -54,7 +54,7 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void PickUpOverlappingItem();
 	virtual bool CanAttack() const override;
-	virtual void Attack() override;
+	virtual void FastAttack() override;
 	virtual void OnAttackEnd() override;
 	void HandleWeaponAction();
 	void DisarmWeapon();
@@ -69,6 +69,12 @@ protected:
 
 	UFUNCTION(BlueprintNativeEvent)
 	void HandleEscape();
+
+	UFUNCTION()
+	void StrongAttack();
+	
+	UFUNCTION()
+	void JumpAttack();
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
@@ -105,7 +111,7 @@ private:
 	UInputAction* MoveAction;
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
-	float Speed = 500.0f;
+	float MaxWalkSpeed = 600.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
@@ -121,6 +127,12 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* AttackAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* StrongAttackAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* JumpAttackAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* EquipAction;
@@ -141,6 +153,12 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* EquipAnimMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* StrongAttackMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* JumpAttackMontage;
 
 	void CheckForInteractables();
 
