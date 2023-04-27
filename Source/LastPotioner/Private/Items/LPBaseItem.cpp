@@ -6,6 +6,7 @@
 #include "NiagaraComponent.h"
 #include "Characters/LPCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Components/WidgetComponent.h"
 
 ALPBaseItem::ALPBaseItem()
 {
@@ -22,6 +23,9 @@ ALPBaseItem::ALPBaseItem()
 
 	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("EmbersEffect"));
 	EmbersEffect->SetupAttachment(GetRootComponent());
+
+	ToolTipText = CreateDefaultSubobject<UWidgetComponent>(TEXT("ToolTipText"));
+	ToolTipText->SetupAttachment(GetRootComponent());
 }
 
 void ALPBaseItem::BeginPlay()
@@ -136,4 +140,9 @@ void ALPBaseItem::AddForce(const FVector& Force)
 void ALPBaseItem::ToggleMeshVisibility() const
 {
 	ItemMesh->ToggleVisibility();
+}
+
+void ALPBaseItem::ToggleToolTipTextVisibility_Implementation()
+{
+	ToolTipText->ToggleVisibility();
 }

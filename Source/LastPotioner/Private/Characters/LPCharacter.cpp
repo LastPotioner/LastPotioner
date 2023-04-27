@@ -13,7 +13,6 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "InventorySystem/LPInventoryComponent.h"
 #include "Interfaces/Interactable.h"
-#include "String/Escape.h"
 
 ALPCharacter::ALPCharacter()
 {
@@ -69,21 +68,36 @@ void ALPCharacter::CheckForInteractables()
 		if (HasHit)
 		{
 			AActor* HitActor = HitResult.GetActor();
-			if (UKismetSystemLibrary::DoesImplementInterface(HitActor, UInteractable::StaticClass()))
+			UE_LOG(LogTemp, Display, TEXT("Get HitActor"));
+			if (CurrentInteractable && HitActor == CurrentInteractable->_getUObject()) return;
+			
+			UE_LOG(LogTemp, Display, TEXT("Cast"));
+			IInteractable* InteractableActor = Cast<IInteractable>(HitActor);
+			if (!InteractableActor)
 			{
-				if (HitActor != CurrentInteractable)
+				if (CurrentInteractable)
 				{
-					UE_LOG(LogTemp, Display, TEXT("Set Interactable"));
-					CurrentInteractable = HitActor;
+					CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
+					CurrentInteractable = nullptr;
 				}
+				return;
 			}
-			else
+			
+			//UKismetSystemLibrary::DoesImplementInterface(HitActor, UInteractable::StaticClass()))
+			if (CurrentInteractable)
 			{
-				CurrentInteractable = nullptr;
+				CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
 			}
+			
+			CurrentInteractable = InteractableActor;
+			CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
 		}
 		else
 		{
+			if (CurrentInteractable)
+			{
+				CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
+			}
 			CurrentInteractable = nullptr;
 		}
 	}
@@ -303,10 +317,10 @@ void ALPCharacter::GetHit_Implementation(const FHitResult& HitResult)
 
 void ALPCharacter::Interact()
 {
-	if (CurrentInteractable && UKismetSystemLibrary::DoesImplementInterface(
-		CurrentInteractable, UInteractable::StaticClass()))
+	if (CurrentInteractable) //&& UKismetSystemLibrary::DoesImplementInterface(CurrentInteractable, UInteractable::StaticClass()))
 	{
-		IInteractable::Execute_Interact(CurrentInteractable, this);
+		CurrentInteractable->Execute_Interact(CurrentInteractable->_getUObject(), this);
+		//IInteractable::Execute_Interact(CurrentInteractable, this);
 	}
 }
 
