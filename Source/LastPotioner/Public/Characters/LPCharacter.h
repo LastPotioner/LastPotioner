@@ -12,6 +12,7 @@
 #include "Components/LPAttributeComponent.h"
 #include "LPCharacter.generated.h"
 
+class IInteractable;
 class UInputAction;
 class UInputMappingContext;
 class USpringArmComponent;
@@ -83,9 +84,8 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxMovementSpeed = 600.0f;
-
-	UPROPERTY(VisibleAnywhere)
-	AActor* CurrentInteractable;
+	
+	IInteractable* CurrentInteractable;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;

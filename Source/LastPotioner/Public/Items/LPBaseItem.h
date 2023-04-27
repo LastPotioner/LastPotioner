@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TextRenderComponent.h"
+#include "Components/WidgetComponent.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/Interactable.h"
 #include "LPBaseItem.generated.h"
@@ -10,6 +12,7 @@
 class USphereComponent;
 class UNiagaraComponent;
 class ALPCharacter;
+class UWidgetComponent;
 
 UENUM(BlueprintType)
 enum class EItemState : uint8
@@ -68,6 +71,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SetValue(int NewValue) { SlotData.Value = FMath::Clamp(NewValue, 0, SlotData.MaxStackSize); }
+
 	void SubtractValue(int Value);
 
 	void Interact_Implementation(ALPCharacter* Character);
@@ -76,6 +80,7 @@ public:
 	void AddForce(const FVector& Force);
 
 	void ToggleMeshVisibility() const;
+	virtual void ToggleToolTipTextVisibility_Implementation();
 
 protected:
 	virtual void BeginPlay() override;
@@ -88,6 +93,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	UStaticMeshComponent* ItemMesh;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UWidgetComponent* ToolTipText;
 
 	void SetItemState(EItemState NewState);
 
@@ -103,7 +111,7 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	bool bShouldPlaySineMovement = false;
-	
+
 	FTimerHandle SineTimerHandle;
 	float SineTimerRate = 0.005;
 	float TimePassed = 0;
@@ -128,5 +136,5 @@ private:
 
 	UFUNCTION()
 	void OnItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-				   FVector NormalImpulse, const FHitResult& Hit);
+	               FVector NormalImpulse, const FHitResult& Hit);
 };
