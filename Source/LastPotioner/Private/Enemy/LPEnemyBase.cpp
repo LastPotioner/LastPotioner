@@ -60,6 +60,16 @@ void ALPEnemyBase::BeginPlay()
 		CurrentWeapon = World->SpawnActor<ALPWeapon>(WeaponClass);
 		CurrentWeapon->Equip(GetMesh(), this, this);
 		CurrentWeapon->Arm();
+
+		switch (CurrentWeapon->GetWeaponType())
+		{
+		case EWeaponType::EWT_OneHanded:
+			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+			break;
+		case EWeaponType::EWT_TwoHanded:
+			CharacterState = ECharacterState::ECS_EquippedTwoHandedWeapon;
+			break;
+		}
 	}
 
 	StartPatrolling();
