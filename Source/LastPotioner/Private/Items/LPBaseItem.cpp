@@ -24,8 +24,8 @@ ALPBaseItem::ALPBaseItem()
 	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("EmbersEffect"));
 	EmbersEffect->SetupAttachment(GetRootComponent());
 
-	ToolTipText = CreateDefaultSubobject<UWidgetComponent>(TEXT("ToolTipText"));
-	ToolTipText->SetupAttachment(GetRootComponent());
+	ToolTipWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ToolTipText"));
+	ToolTipWidget->SetupAttachment(GetRootComponent());
 }
 
 void ALPBaseItem::BeginPlay()
@@ -127,7 +127,7 @@ void ALPBaseItem::SubtractValue(int Value)
 
 void ALPBaseItem::Interact_Implementation(ALPCharacter* Character)
 {
-	if (!Character) return;
+	if (!Character || ItemState == EItemState::EIS_Taken) return;
 	const int AddedValue = Character->AddItemToInventory(this);
 	SubtractValue(AddedValue);
 }
@@ -144,8 +144,8 @@ void ALPBaseItem::ToggleMeshVisibility() const
 
 void ALPBaseItem::ToggleToolTipTextVisibility_Implementation()
 {
-	if (ItemState == EItemState::EIS_OnGround || ItemState == EItemState::EIS_Taken && ToolTipText->IsVisible())
+	if (ItemState == EItemState::EIS_OnGround || ItemState == EItemState::EIS_Taken && ToolTipWidget->IsVisible())
 	{
-		ToolTipText->ToggleVisibility();
+		ToolTipWidget->ToggleVisibility();
 	}
 }
