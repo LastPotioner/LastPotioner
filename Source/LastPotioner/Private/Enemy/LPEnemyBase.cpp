@@ -150,6 +150,11 @@ void ALPEnemyBase::CheckCombatTarget()
 		GetWorldTimerManager().ClearTimer(AttackTimer);
 		ChaseTarget();
 	}
+
+	if (GetVelocity().Size() == 0 && EnemyState == EEnemyState::EES_Chasing)
+	{
+		ChaseTarget();
+	}
 }
 
 void ALPEnemyBase::SetHealthBarVisibility(bool Visible) const

@@ -144,5 +144,8 @@ void ALPBaseItem::ToggleMeshVisibility() const
 
 void ALPBaseItem::ToggleToolTipTextVisibility_Implementation()
 {
-	ToolTipText->ToggleVisibility();
+	if (ItemState == EItemState::EIS_OnGround || ItemState == EItemState::EIS_Taken && ToolTipText->IsVisible())
+	{
+		ToolTipText->ToggleVisibility();
+	}
 }
