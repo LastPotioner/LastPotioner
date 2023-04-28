@@ -22,6 +22,8 @@ class ULPInventoryComponent;
 class ALPBaseItem;
 class ALPWeapon;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDiedSignature);
+
 UCLASS()
 class LASTPOTIONER_API ALPCharacter : public ALPBaseCharacter
 {
@@ -46,6 +48,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	float GetHealthPercent() { return AttributeComponent->GetHealthPercent(); }
+
+	UPROPERTY(BlueprintAssignable)
+	FOnCharacterDiedSignature OnCharacterDied;
 
 protected:
 	UPROPERTY(BlueprintReadOnly)
@@ -80,6 +85,8 @@ protected:
 
 	UFUNCTION()
 	void JumpAttack();
+
+	virtual void Die() override;
 
 private:
 	UPROPERTY(EditAnywhere, Category = "Movement")

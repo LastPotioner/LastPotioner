@@ -68,6 +68,7 @@ public:
 	bool IsStackable() const { return SlotData.bIsStackable; }
 	int GetValue() const { return SlotData.Value; }
 	int GetID() const { return SlotData.ID; }
+	EItemState GetItemState() const { return ItemState; }
 
 	UFUNCTION(BlueprintCallable)
 	void SetValue(int NewValue) { SlotData.Value = FMath::Clamp(NewValue, 0, SlotData.MaxStackSize); }
@@ -95,7 +96,7 @@ protected:
 	UStaticMeshComponent* ItemMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	UWidgetComponent* ToolTipText;
+	UWidgetComponent* ToolTipWidget;
 
 	void SetItemState(EItemState NewState);
 

@@ -298,6 +298,13 @@ void ALPCharacter::JumpAttack()
 	}
 }
 
+void ALPCharacter::Die()
+{
+	Super::Die();
+
+	OnCharacterDied.Broadcast();
+}
+
 void ALPCharacter::OnAttackEnd()
 {
 	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
@@ -307,7 +314,9 @@ void ALPCharacter::OnAttackEnd()
 
 bool ALPCharacter::CanAttack() const
 {
-	return (ActionState == EActionState::EAS_Unoccupied) && (CharacterState != ECharacterState::ECS_Unequipped);
+	return (ActionState == EActionState::EAS_Unoccupied)
+	&& (CharacterState != ECharacterState::ECS_Unequipped)
+	&& (!GetCharacterMovement()->IsFalling());
 }
 
 void ALPCharacter::GetHit_Implementation(const FHitResult& HitResult)
