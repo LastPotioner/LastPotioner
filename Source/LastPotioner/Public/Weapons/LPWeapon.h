@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "InputBehavior.h"
 #include "Items/LPBaseItem.h"
 #include "LPWeapon.generated.h"
 
@@ -28,10 +27,8 @@ public:
 	void Equip(USceneComponent* InParent, AActor* NewOwner, APawn* NewInstigator);
 	void AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const;
 	void SetCollisionEnabled(bool bCollisionEnabled) const;
-
 	void Arm() const;
 	void Disarm() const;
-
 	void ClearIgnoreActors();
 
 protected:
