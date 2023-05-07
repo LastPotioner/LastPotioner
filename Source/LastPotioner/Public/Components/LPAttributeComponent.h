@@ -22,6 +22,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FORCEINLINE bool IsAlive() const { return Health > 0; }
 
+	void AddHealth(float HealthDelta);
+
 protected:
 	virtual void BeginPlay() override;
 

@@ -49,6 +49,11 @@ float ALPBaseCharacter::TakeDamage(float DamageAmount, FDamageEvent const& Damag
 	return DamageAmount;
 }
 
+void ALPBaseCharacter::AddHealth(float Health)
+{
+	AttributeComponent->AddHealth(Health);
+}
+
 bool ALPBaseCharacter::IsAlive() const
 {
 	return AttributeComponent && AttributeComponent->IsAlive();

@@ -8,6 +8,11 @@ ULPAttributeComponent::ULPAttributeComponent()
 	PrimaryComponentTick.bCanEverTick = false;
 }
 
+void ULPAttributeComponent::AddHealth(float HealthDelta)
+{
+	Health = FMath::Clamp(Health + HealthDelta, 0, MaxHealth);
+}
+
 void ULPAttributeComponent::BeginPlay()
 {
 	Super::BeginPlay();

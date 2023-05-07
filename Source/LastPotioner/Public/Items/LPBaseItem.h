@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/TextRenderComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Effects/BaseItemEffect.h"
 #include "GameFramework/Actor.h"
 #include "Interfaces/Interactable.h"
 #include "LPBaseItem.generated.h"
@@ -44,6 +45,12 @@ struct FItemSlotData
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	int MaxStackSize = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
+	TArray<UBaseItemEffect*> ItemEffects;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bIsUsable = false;
+
 	void CopyFrom(const FItemSlotData& Other)
 	{
 		ItemIcon = Other.ItemIcon;
@@ -52,6 +59,8 @@ struct FItemSlotData
 		bIsStackable = Other.bIsStackable;
 		ItemClass = Other.ItemClass;
 		MaxStackSize = Other.MaxStackSize;
+		ItemEffects = Other.ItemEffects;
+		bIsUsable = Other.bIsUsable;
 	}
 };
 

@@ -28,6 +28,9 @@ public:
 	                         class AController* EventInstigator, AActor* DamageCauser) override;
 
 	UFUNCTION(BlueprintCallable)
+	void AddHealth(float Health);
+
+	UFUNCTION(BlueprintCallable)
 	bool IsAlive() const;
 
 protected:
