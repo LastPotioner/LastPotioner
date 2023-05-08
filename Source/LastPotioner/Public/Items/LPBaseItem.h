@@ -20,6 +20,7 @@ enum class EItemState : uint8
 {
 	EIS_OnGround,
 	EIS_Taken,
+	EIS_Thrown
 };
 
 USTRUCT(BlueprintType)
@@ -50,6 +51,9 @@ struct FItemSlotData
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	bool bIsUsable = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bCanBeThrown = false;
 
 	void CopyFrom(const FItemSlotData& Other)
 	{
@@ -95,13 +99,13 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	EItemState ItemState = EItemState::EIS_OnGround;
 
 	UPROPERTY(VisibleAnywhere)
 	USphereComponent* Sphere;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
 	UStaticMeshComponent* ItemMesh;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)

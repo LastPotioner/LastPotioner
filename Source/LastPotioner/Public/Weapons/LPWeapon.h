@@ -65,7 +65,7 @@ private:
 	EWeaponType WeaponType;
 
 	TMap<EWeaponType, FName> ArmSocketNames {
-		{EWeaponType::EWT_OneHanded, FName("OneHandedArmedWeaponSocket")},
+		{EWeaponType::EWT_OneHanded, FName("RightHandSocket")},
 		{EWeaponType::EWT_TwoHanded, FName{"TwoHandedArmedWeaponSocket"}}};
 
 	TMap<EWeaponType, FName> DisarmSocketNames {
