@@ -12,17 +12,17 @@ ALPBaseItem::ALPBaseItem()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
+	SetRootComponent(Sphere);
+
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
 	ItemMesh->SetCollisionResponseToAllChannels(ECR_Block);
 	ItemMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 	ItemMesh->SetSimulatePhysics(true);
-	SetRootComponent(ItemMesh);
-
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("SphereComponent"));
-	Sphere->SetupAttachment(GetRootComponent());
+	ItemMesh->SetupAttachment(Sphere);
 
 	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("EmbersEffect"));
-	EmbersEffect->SetupAttachment(GetRootComponent());
+	EmbersEffect->SetupAttachment(ItemMesh);
 
 	ToolTipWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ToolTipText"));
 	ToolTipWidget->SetupAttachment(GetRootComponent());

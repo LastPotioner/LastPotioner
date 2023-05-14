@@ -14,16 +14,16 @@
 ALPWeapon::ALPWeapon()
 {
 	WeaponBox = CreateDefaultSubobject<UBoxComponent>(TEXT("Weapon Box"));
-	WeaponBox->SetupAttachment(GetRootComponent());
+	WeaponBox->SetupAttachment(ItemMesh);
 	WeaponBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	WeaponBox->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Overlap);
 	WeaponBox->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 
 	BoxTraceStart = CreateDefaultSubobject<USceneComponent>(TEXT("Trace Start"));
-	BoxTraceStart->SetupAttachment(GetRootComponent());
+	BoxTraceStart->SetupAttachment(ItemMesh);
 
 	BoxTraceEnd = CreateDefaultSubobject<USceneComponent>(TEXT("Trace End"));
-	BoxTraceEnd->SetupAttachment(GetRootComponent());
+	BoxTraceEnd->SetupAttachment(ItemMesh);
 
 	ItemMesh->SetSimulatePhysics(false);
 }
@@ -141,4 +141,8 @@ void ALPWeapon::Disarm() const
 void ALPWeapon::ClearIgnoreActors()
 {
 	IgnoreActors.Empty();
+}
+
+void ALPWeapon::Interact_Implementation(ALPCharacter* Character)
+{
 }

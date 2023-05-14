@@ -68,10 +68,7 @@ void ALPCharacter::CheckForInteractables()
 		if (HasHit)
 		{
 			AActor* HitActor = HitResult.GetActor();
-			UE_LOG(LogTemp, Display, TEXT("Get HitActor"));
 			if (CurrentInteractable && HitActor == CurrentInteractable->_getUObject()) return;
-			
-			UE_LOG(LogTemp, Display, TEXT("Cast"));
 			IInteractable* InteractableActor = Cast<IInteractable>(HitActor);
 			if (!InteractableActor)
 			{

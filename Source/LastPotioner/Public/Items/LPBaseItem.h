@@ -18,9 +18,16 @@ class UWidgetComponent;
 UENUM(BlueprintType)
 enum class EItemState : uint8
 {
-	EIS_OnGround,
-	EIS_Taken,
-	EIS_Thrown
+	EIS_OnGround UMETA(DisplayName = "OnGround"),
+	EIS_Taken UMETA(DisplayName = "Taken"),
+	EIS_Thrown UMETA(DisplayName = "Thrown"),
+};
+
+UENUM(BlueprintType)
+enum class EItemCapability : uint8
+{
+	EIC_Usable UMETA(DisplayName = "Usable"),
+	EIC_Throwable UMETA(DisplayName = "Throwable"),
 };
 
 USTRUCT(BlueprintType)
@@ -50,10 +57,7 @@ struct FItemSlotData
 	TArray<UBaseItemEffect*> ItemEffects;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bIsUsable = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	bool bCanBeThrown = false;
+	EItemCapability Capability;
 
 	void CopyFrom(const FItemSlotData& Other)
 	{
@@ -64,7 +68,7 @@ struct FItemSlotData
 		ItemClass = Other.ItemClass;
 		MaxStackSize = Other.MaxStackSize;
 		ItemEffects = Other.ItemEffects;
-		bIsUsable = Other.bIsUsable;
+		Capability = Other.Capability;
 	}
 };
 
@@ -88,13 +92,13 @@ public:
 
 	void SubtractValue(int Value);
 
-	void Interact_Implementation(ALPCharacter* Character);
+	virtual void Interact_Implementation(ALPCharacter* Character) override;
 
 	UFUNCTION(BlueprintCallable)
 	void AddForce(const FVector& Force);
 
 	void ToggleMeshVisibility() const;
-	virtual void ToggleToolTipTextVisibility_Implementation();
+	virtual void ToggleToolTipTextVisibility_Implementation() override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -102,7 +106,7 @@ protected:
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	EItemState ItemState = EItemState::EIS_OnGround;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* Sphere;
 
 	UPROPERTY(BlueprintReadOnly, VisibleAnywhere)
@@ -142,7 +146,7 @@ private:
 	UFUNCTION()
 	void SineMovement();
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	FItemSlotData SlotData;
 
 	UPROPERTY(EditDefaultsOnly)

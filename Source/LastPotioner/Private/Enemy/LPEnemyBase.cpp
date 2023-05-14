@@ -269,7 +269,7 @@ void ALPEnemyBase::MoveToTarget(const AActor* Target) const
 
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
-	MoveRequest.SetAcceptanceRadius(60.0f);
+	MoveRequest.SetAcceptanceRadius(40.0f);
 	EnemyController->MoveTo(MoveRequest);
 }
 
@@ -350,7 +350,7 @@ float ALPEnemyBase::TakeDamage(float DamageAmount, FDamageEvent const& DamageEve
 {
 	Super::TakeDamage(DamageAmount, DamageEvent, EventInstigator, DamageCauser);
 
-	if (!CombatTarget)
+	if (!CombatTarget && EventInstigator && EventInstigator->GetPawn())
 	{
 		OnSeePawn(EventInstigator->GetPawn());
 	}
