@@ -91,8 +91,9 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxMovementSpeed = 600.0f;
-	
-	IInteractable* CurrentInteractable;
+
+	UPROPERTY()
+	AActor* CurrentInteractable;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;

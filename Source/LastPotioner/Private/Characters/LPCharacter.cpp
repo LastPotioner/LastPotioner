@@ -68,32 +68,33 @@ void ALPCharacter::CheckForInteractables()
 		if (HasHit)
 		{
 			AActor* HitActor = HitResult.GetActor();
-			if (CurrentInteractable && HitActor == CurrentInteractable->_getUObject()) return;
-			IInteractable* InteractableActor = Cast<IInteractable>(HitActor);
-			if (!InteractableActor)
+			if (CurrentInteractable && HitActor == CurrentInteractable) return;
+
+			if (!UKismetSystemLibrary::DoesImplementInterface(HitActor, UInteractable::StaticClass()))
 			{
+				UE_LOG(LogTemp, Display, TEXT("Does not implement"));
 				if (CurrentInteractable)
 				{
-					CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
-					CurrentInteractable = nullptr;
+					IInteractable::Execute_ToggleToolTipTextVisibility(CurrentInteractable);
 				}
+				
+				CurrentInteractable = nullptr;
 				return;
 			}
 			
-			//UKismetSystemLibrary::DoesImplementInterface(HitActor, UInteractable::StaticClass()))
 			if (CurrentInteractable)
 			{
-				CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
+				IInteractable::Execute_ToggleToolTipTextVisibility(CurrentInteractable);
 			}
 			
-			CurrentInteractable = InteractableActor;
-			CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
+			CurrentInteractable = HitActor;
+			IInteractable::Execute_ToggleToolTipTextVisibility(CurrentInteractable);
 		}
 		else
 		{
 			if (CurrentInteractable)
 			{
-				CurrentInteractable->Execute_ToggleToolTipTextVisibility(CurrentInteractable->_getUObject());
+				IInteractable::Execute_ToggleToolTipTextVisibility(CurrentInteractable);
 			}
 			CurrentInteractable = nullptr;
 		}
@@ -325,8 +326,7 @@ void ALPCharacter::Interact()
 {
 	if (CurrentInteractable) //&& UKismetSystemLibrary::DoesImplementInterface(CurrentInteractable, UInteractable::StaticClass()))
 	{
-		CurrentInteractable->Execute_Interact(CurrentInteractable->_getUObject(), this);
-		//IInteractable::Execute_Interact(CurrentInteractable, this);
+		IInteractable::Execute_Interact(CurrentInteractable, this);
 	}
 }
 
