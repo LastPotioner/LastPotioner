@@ -35,41 +35,44 @@ struct FItemSlotData
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* ItemIcon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ID = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Value = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsStackable = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ALPBaseItem> ItemClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MaxStackSize = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced)
 	TArray<UBaseItemEffect*> ItemEffects;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	EItemCapability Capability;
-
-	void CopyFrom(const FItemSlotData& Other)
-	{
-		ItemIcon = Other.ItemIcon;
-		ID = Other.ID;
-		Value = Other.Value;
-		bIsStackable = Other.bIsStackable;
-		ItemClass = Other.ItemClass;
-		MaxStackSize = Other.MaxStackSize;
-		ItemEffects = Other.ItemEffects;
-		Capability = Other.Capability;
-	}
+	
+    UFUNCTION(BlueprintCallable) 
+        void CopyFrom(const FItemSlotData& Other)
+        {
+           
+            ItemIcon = Other.ItemIcon;
+            ID = Other.ID;
+            Value = Other.Value;
+            bIsStackable = Other.bIsStackable;
+            ItemClass = Other.ItemClass;
+            MaxStackSize = Other.MaxStackSize;
+            ItemEffects = Other.ItemEffects;
+            Capability = Other.Capability;
+        }
+	
 };
 
 UCLASS()
