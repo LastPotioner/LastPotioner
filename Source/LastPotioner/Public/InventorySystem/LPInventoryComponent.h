@@ -27,13 +27,13 @@ public:
 	int AddItem(const ALPBaseItem* Item);
 
 	UFUNCTION(BlueprintCallable)
-	int AddItemInSlot(const FItemSlotData& Item, int SlotIndex);
+	int AddItemInSlot(const FItemSignature& Item, int SlotIndex);
 
 	UFUNCTION(BlueprintCallable)
 	int GetSlotsNum() const { return InventoryContainer.Num(); }
 
 	UFUNCTION(BlueprintCallable)
-	const FItemSlotData& GetSlotByIndex(int Index) const;
+	const FItemSignature& GetSlotByIndex(int Index) const;
 
 	UFUNCTION(BlueprintCallable)
 	void SwapSlots(int SelfSlotIndex, int SourceSlotIndex, ULPInventoryComponent* SourceInventory);
@@ -44,15 +44,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	int GetSlotsPerRow() const { return SlotsPerRow; }
 
-	void SetSlotByIndex(int Index, const FItemSlotData& NewData);
+	void SetSlotByIndex(int Index, const FItemSignature& NewData);
 
 private:
 	UPROPERTY(EditAnywhere)
-	TArray<FItemSlotData> InventoryContainer;
+	TArray<FItemSignature> InventoryContainer;
 
 	int FindSuitableSlot(const ALPBaseItem* Item);
 	void SetSlotEmpty(int SlotIndex);
-	void InitializeSlot(int SlotIndex, const FItemSlotData& Item);
+	void InitializeSlot(int SlotIndex, const FItemSignature& Item);
 
 	UPROPERTY(EditAnywhere, Category = "UI")
 	int SlotsPerRow = 4;

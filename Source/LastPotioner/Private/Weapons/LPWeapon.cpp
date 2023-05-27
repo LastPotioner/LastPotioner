@@ -143,6 +143,7 @@ void ALPWeapon::ClearIgnoreActors()
 	IgnoreActors.Empty();
 }
 
-void ALPWeapon::Interact_Implementation(ALPCharacter* Character)
+FName ALPWeapon::Interact_Implementation(ALPCharacter* Character)
 {
+	return FName("");
 }

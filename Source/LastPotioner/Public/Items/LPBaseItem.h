@@ -30,36 +30,36 @@ enum class EItemCapability : uint8
 	EIC_Throwable UMETA(DisplayName = "Throwable"),
 };
 
-USTRUCT(BlueprintType)
-struct FItemSlotData
+USTRUCT(BlueprintType, meta = (IsBlueprintBase="true"))
+struct FItemSignature
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* ItemIcon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int ID = -1;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Value = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsStackable = false;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TSubclassOf<ALPBaseItem> ItemClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MaxStackSize = 0;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Instanced)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Instanced)
 	TArray<UBaseItemEffect*> ItemEffects;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EItemCapability Capability;
 
-	void CopyFrom(const FItemSlotData& Other)
+	void CopyFrom(const FItemSignature& Other)
 	{
 		ItemIcon = Other.ItemIcon;
 		ID = Other.ID;
@@ -80,19 +80,19 @@ class LASTPOTIONER_API ALPBaseItem : public AActor, public IInteractable
 public:
 	ALPBaseItem();
 
-	const FItemSlotData& GetSlotData() const { return SlotData; }
-	int GetMaxStackSize() const { return SlotData.MaxStackSize; };
-	bool IsStackable() const { return SlotData.bIsStackable; }
-	int GetValue() const { return SlotData.Value; }
-	int GetID() const { return SlotData.ID; }
+	const FItemSignature& GetSlotData() const { return ItemSignature; }
+	int GetMaxStackSize() const { return ItemSignature.MaxStackSize; };
+	bool IsStackable() const { return ItemSignature.bIsStackable; }
+	int GetValue() const { return ItemSignature.Value; }
+	int GetID() const { return ItemSignature.ID; }
 	EItemState GetItemState() const { return ItemState; }
 
 	UFUNCTION(BlueprintCallable)
-	void SetValue(int NewValue) { SlotData.Value = FMath::Clamp(NewValue, 0, SlotData.MaxStackSize); }
+	void SetValue(int NewValue) { ItemSignature.Value = FMath::Clamp(NewValue, 0, ItemSignature.MaxStackSize); }
 
 	void SubtractValue(int Value);
 
-	virtual void Interact_Implementation(ALPCharacter* Character) override;
+	virtual FName Interact_Implementation(ALPCharacter* Character) override;
 
 	UFUNCTION(BlueprintCallable)
 	void AddForce(const FVector& Force);
@@ -105,6 +105,9 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	EItemState ItemState = EItemState::EIS_OnGround;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ObjectiveID;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* Sphere;
@@ -147,7 +150,7 @@ private:
 	void SineMovement();
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
-	FItemSlotData SlotData;
+	FItemSignature ItemSignature;
 
 	UPROPERTY(EditDefaultsOnly)
 	UStaticMeshComponent* StaticMesh;

@@ -38,11 +38,11 @@ void ALPBaseItem::BeginPlay()
 
 	if (!IsStackable())
 	{
-		SlotData.MaxStackSize = 1;
+		ItemSignature.MaxStackSize = 1;
 	}
 
-	SlotData.Value = SlotData.Value > SlotData.MaxStackSize ? SlotData.MaxStackSize : SlotData.Value;
-	SlotData.ItemClass = this->GetClass();
+	ItemSignature.Value = ItemSignature.Value > ItemSignature.MaxStackSize ? ItemSignature.MaxStackSize : ItemSignature.Value;
+	ItemSignature.ItemClass = this->GetClass();
 
 	if (ItemState == EItemState::EIS_OnGround && bShouldPlaySineMovement)
 	{
@@ -118,18 +118,20 @@ void ALPBaseItem::OnItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 
 void ALPBaseItem::SubtractValue(int Value)
 {
-	SlotData.Value = FMath::Clamp(SlotData.Value - Value, 0, SlotData.MaxStackSize);
-	if (SlotData.Value == 0)
+	ItemSignature.Value = FMath::Clamp(ItemSignature.Value - Value, 0, ItemSignature.MaxStackSize);
+	if (ItemSignature.Value == 0)
 	{
 		Destroy();
 	}
 }
 
-void ALPBaseItem::Interact_Implementation(ALPCharacter* Character)
+FName ALPBaseItem::Interact_Implementation(ALPCharacter* Character)
 {
-	if (!Character || ItemState == EItemState::EIS_Taken) return;
+	if (!Character || ItemState == EItemState::EIS_Taken) return FName("");
 	const int AddedValue = Character->AddItemToInventory(this);
 	SubtractValue(AddedValue);
+
+	return ObjectiveID;
 }
 
 void ALPBaseItem::AddForce(const FVector& Force)

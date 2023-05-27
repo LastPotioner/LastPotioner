@@ -39,7 +39,7 @@ public:
 	virtual void Tick(float DeltaSeconds) override;
 
 	UFUNCTION(BlueprintCallable)
-	void Interact();
+	FName Interact();
 
 	int AddItemToInventory(const ALPBaseItem* Item) const;
 

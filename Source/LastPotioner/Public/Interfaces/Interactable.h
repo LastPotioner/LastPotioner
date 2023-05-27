@@ -21,7 +21,7 @@ class LASTPOTIONER_API IInteractable
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	void Interact(ALPCharacter* Character);
+	FName Interact(ALPCharacter* Character);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void ToggleToolTipTextVisibility();
