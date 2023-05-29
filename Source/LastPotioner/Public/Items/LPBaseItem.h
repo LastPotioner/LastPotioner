@@ -70,6 +70,7 @@ struct FItemSignature
 		ItemEffects = Other.ItemEffects;
 		Capability = Other.Capability;
 	}
+};
 
 UCLASS()
 class LASTPOTIONER_API ALPBaseItem : public AActor, public IInteractable
