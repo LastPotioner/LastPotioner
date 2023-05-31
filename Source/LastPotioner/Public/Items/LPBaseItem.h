@@ -59,6 +59,9 @@ struct FItemSignature
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EItemCapability Capability;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ObjectiveID;
+
 	void CopyFrom(const FItemSignature& Other)
 	{
 		ItemIcon = Other.ItemIcon;
@@ -69,7 +72,9 @@ struct FItemSignature
 		MaxStackSize = Other.MaxStackSize;
 		ItemEffects = Other.ItemEffects;
 		Capability = Other.Capability;
+		ObjectiveID = Other.ObjectiveID;
 	}
+};
 
 UCLASS()
 class LASTPOTIONER_API ALPBaseItem : public AActor, public IInteractable
@@ -91,7 +96,7 @@ public:
 
 	void SubtractValue(int Value);
 
-	virtual FName Interact_Implementation(ALPCharacter* Character) override;
+	virtual FInteractionResult Interact_Implementation(ALPCharacter* Character) override;
 
 	UFUNCTION(BlueprintCallable)
 	void AddForce(const FVector& Force);
@@ -104,9 +109,6 @@ protected:
 
 	UPROPERTY(BlueprintReadWrite, VisibleAnywhere)
 	EItemState ItemState = EItemState::EIS_OnGround;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FName ObjectiveID;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	USphereComponent* Sphere;

@@ -8,6 +8,30 @@
 
 class ALPCharacter;
 
+USTRUCT(BlueprintType)
+struct FInteractionResult
+{
+	GENERATED_BODY()
+
+	FInteractionResult()
+	{
+		ObjectiveID = FName("");
+		Value = 0;
+	}
+
+	FInteractionResult(FName ObjectiveID, int Value)
+	{
+		this->ObjectiveID = ObjectiveID;
+		this->Value = Value;
+	}
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FName ObjectiveID = FName("");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Value = 0;
+};
+
 UINTERFACE(MinimalAPI)
 class UInteractable : public UInterface
 {
@@ -21,7 +45,7 @@ class LASTPOTIONER_API IInteractable
 
 public:
 	UFUNCTION(BlueprintNativeEvent)
-	FName Interact(ALPCharacter* Character);
+	FInteractionResult Interact(ALPCharacter* Character);
 
 	UFUNCTION(BlueprintNativeEvent)
 	void ToggleToolTipTextVisibility();

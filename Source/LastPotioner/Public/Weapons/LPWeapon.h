@@ -30,7 +30,7 @@ public:
 	void Arm() const;
 	void Disarm() const;
 	void ClearIgnoreActors();
-	virtual FName Interact_Implementation(ALPCharacter* Character) override;
+	virtual FInteractionResult Interact_Implementation(ALPCharacter* Character) override;
 
 protected:
 	virtual void BeginPlay() override;

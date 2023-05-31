@@ -322,14 +322,14 @@ void ALPCharacter::GetHit_Implementation(const FHitResult& HitResult)
 	Super::GetHit_Implementation(HitResult);
 }
 
-FName ALPCharacter::Interact()
+FInteractionResult ALPCharacter::Interact()
 {
 	if (CurrentInteractable) //&& UKismetSystemLibrary::DoesImplementInterface(CurrentInteractable, UInteractable::StaticClass()))
 	{
 		return IInteractable::Execute_Interact(CurrentInteractable, this);
 	}
 
-	return FName("");
+	return FInteractionResult("", 0);
 }
 
 int ALPCharacter::AddItemToInventory(const ALPBaseItem* Item) const

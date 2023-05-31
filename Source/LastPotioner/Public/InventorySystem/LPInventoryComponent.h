@@ -46,6 +46,10 @@ public:
 
 	void SetSlotByIndex(int Index, const FItemSignature& NewData);
 
+	UFUNCTION(BlueprintCallable)
+	TArray<FItemSignature> GetSlotsByObjectiveID(FName ObjectiveID);
+
+
 private:
 	UPROPERTY(EditAnywhere)
 	TArray<FItemSignature> InventoryContainer;

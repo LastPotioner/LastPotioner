@@ -45,7 +45,13 @@ protected:
 	virtual void PlayDeathAnimMontage() override;
 	virtual void Die() override;
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void TransferObjectiveID() const;
+
 private:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess="true"))
+	FName ObjectiveID;
+	
 	UPROPERTY(EditAnywhere)
 	float RotationToTargetSpeed = 2.0f;
 

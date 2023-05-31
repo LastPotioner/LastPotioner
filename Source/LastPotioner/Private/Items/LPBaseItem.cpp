@@ -125,13 +125,13 @@ void ALPBaseItem::SubtractValue(int Value)
 	}
 }
 
-FName ALPBaseItem::Interact_Implementation(ALPCharacter* Character)
+FInteractionResult ALPBaseItem::Interact_Implementation(ALPCharacter* Character)
 {
-	if (!Character || ItemState == EItemState::EIS_Taken) return FName("");
+	if (!Character || ItemState == EItemState::EIS_Taken) return FInteractionResult();
 	const int AddedValue = Character->AddItemToInventory(this);
 	SubtractValue(AddedValue);
 
-	return ObjectiveID;
+	return FInteractionResult(ItemSignature.ObjectiveID, AddedValue);
 }
 
 void ALPBaseItem::AddForce(const FVector& Force)

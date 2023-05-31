@@ -39,6 +39,21 @@ void ULPInventoryComponent::SetSlotByIndex(int Index, const FItemSignature& NewD
 	InventoryContainer[Index].CopyFrom(NewData);
 }
 
+TArray<FItemSignature> ULPInventoryComponent::GetSlotsByObjectiveID(FName ObjectiveID) 
+{
+	TArray<FItemSignature> Result;
+
+	for (const FItemSignature& Item : InventoryContainer)
+	{
+		if (Item.ObjectiveID == ObjectiveID)
+		{
+			Result.Add(Item);
+		}
+	}
+
+	return Result;
+}
+
 int ULPInventoryComponent::AddItem(const ALPBaseItem* Item)
 {
 	const int Value = Item->GetValue();

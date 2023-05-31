@@ -284,7 +284,8 @@ bool ALPEnemyBase::InTargetRange(const AActor* Target, float Range) const
 void ALPEnemyBase::Die()
 {
 	Super::Die();
-
+	
+	TransferObjectiveID();
 	SetEnemyState(EEnemyState::EES_Dead);
 	GetWorldTimerManager().ClearAllTimersForObject(this);
 	LoseInterest();
