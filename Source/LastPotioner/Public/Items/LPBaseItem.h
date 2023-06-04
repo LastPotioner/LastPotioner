@@ -36,6 +36,9 @@ struct FItemSignature
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FText ItemName = FText();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UTexture2D* ItemIcon;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -64,6 +67,7 @@ struct FItemSignature
 
 	void CopyFrom(const FItemSignature& Other)
 	{
+		ItemName = Other.ItemName;
 		ItemIcon = Other.ItemIcon;
 		ID = Other.ID;
 		Value = Other.Value;

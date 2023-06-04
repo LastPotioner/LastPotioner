@@ -336,7 +336,7 @@ int ALPCharacter::AddItemToInventory(const ALPBaseItem* Item) const
 {
 	if (!InventoryComponent) return 0;
 
-	return InventoryComponent->AddItem(Item);
+	return InventoryComponent->AddItemByClassRef(Item);
 }
 
 void ALPCharacter::SetOpenedStorage(AActor* Storage)

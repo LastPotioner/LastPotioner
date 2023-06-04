@@ -24,7 +24,10 @@ public:
 	FOnSlotChangedSignature OnSlotChanged;
 
 	UFUNCTION(BlueprintCallable)
-	int AddItem(const ALPBaseItem* Item);
+	int AddItemByClassRef(const ALPBaseItem* Item); // to resolve blueprints conflict
+	
+	UFUNCTION(BlueprintCallable)
+	int AddItem(const FItemSignature& Item);
 
 	UFUNCTION(BlueprintCallable)
 	int AddItemInSlot(const FItemSignature& Item, int SlotIndex);
@@ -51,10 +54,10 @@ public:
 
 
 private:
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
 	TArray<FItemSignature> InventoryContainer;
 
-	int FindSuitableSlot(const ALPBaseItem* Item);
+	int FindSuitableSlot(const FItemSignature& Item);
 	void SetSlotEmpty(int SlotIndex);
 	void InitializeSlot(int SlotIndex, const FItemSignature& Item);
 

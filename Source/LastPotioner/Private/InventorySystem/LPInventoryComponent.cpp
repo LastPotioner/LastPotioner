@@ -54,9 +54,14 @@ TArray<FItemSignature> ULPInventoryComponent::GetSlotsByObjectiveID(FName Object
 	return Result;
 }
 
-int ULPInventoryComponent::AddItem(const ALPBaseItem* Item)
+int ULPInventoryComponent::AddItemByClassRef(const ALPBaseItem* Item)
 {
-	const int Value = Item->GetValue();
+	return AddItem(Item->GetSlotData());
+}
+
+int ULPInventoryComponent::AddItem(const FItemSignature& Item)
+{
+	const int Value = Item.Value;
 	int Overage = Value;
 
 	// Until all the items are in the slots 
@@ -66,7 +71,7 @@ int ULPInventoryComponent::AddItem(const ALPBaseItem* Item)
 
 		if (SlotIndex != -1)
 		{
-			Overage = Value - AddItemInSlot(Item->GetSlotData(), SlotIndex);
+			Overage = Value - AddItemInSlot(Item, SlotIndex);
 		}
 		else
 		{
@@ -102,22 +107,22 @@ int ULPInventoryComponent::AddItemInSlot(const FItemSignature& Item, int SlotInd
 	return Value - Overage;
 }
 
-int ULPInventoryComponent::FindSuitableSlot(const ALPBaseItem* Item)
+int ULPInventoryComponent::FindSuitableSlot(const FItemSignature& Item)
 {
-	if (!Item) return -1;
+	if (Item.ID == -1) return -1;
 
 	int FirstEmptySlot = -1;
 
 	for (int i = 0; i < InventoryContainer.Num(); i++)
 	{
-		const FItemSignature Slot = InventoryContainer[i];
+		const FItemSignature& Slot = InventoryContainer[i];
 
 		if (Slot.ID == -1 && FirstEmptySlot == -1)
 		{
 			FirstEmptySlot = i;
 		}
 
-		if (Slot.ID == Item->GetID() && Slot.Value != Slot.MaxStackSize)
+		if (Slot.ID == Item.ID && Slot.Value != Slot.MaxStackSize)
 		{
 			return i;
 		}
