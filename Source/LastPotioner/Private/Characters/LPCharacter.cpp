@@ -332,11 +332,11 @@ FInteractionResult ALPCharacter::Interact()
 	return FInteractionResult("", 0);
 }
 
-int ALPCharacter::AddItemToInventory(const ALPBaseItem* Item) const
+int ALPCharacter::AddItemToInventory(ALPBaseItem* Item) const
 {
 	if (!InventoryComponent) return 0;
 
-	return InventoryComponent->AddItemByClassRef(Item);
+	return InventoryComponent->AddItemByRef(Item);
 }
 
 void ALPCharacter::SetOpenedStorage(AActor* Storage)

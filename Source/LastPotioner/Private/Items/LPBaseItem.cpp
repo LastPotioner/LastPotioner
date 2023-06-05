@@ -41,7 +41,7 @@ void ALPBaseItem::BeginPlay()
 		ItemSignature.MaxStackSize = 1;
 	}
 
-	ItemSignature.Value = ItemSignature.Value > ItemSignature.MaxStackSize ? ItemSignature.MaxStackSize : ItemSignature.Value;
+	ItemSignature.Quantity = ItemSignature.Quantity > ItemSignature.MaxStackSize ? ItemSignature.MaxStackSize : ItemSignature.Quantity;
 	ItemSignature.ItemClass = this->GetClass();
 
 	if (ItemState == EItemState::EIS_OnGround && bShouldPlaySineMovement)
@@ -118,8 +118,8 @@ void ALPBaseItem::OnItemHit(UPrimitiveComponent* HitComponent, AActor* OtherActo
 
 void ALPBaseItem::SubtractValue(int Value)
 {
-	ItemSignature.Value = FMath::Clamp(ItemSignature.Value - Value, 0, ItemSignature.MaxStackSize);
-	if (ItemSignature.Value == 0)
+	ItemSignature.Quantity = FMath::Clamp(ItemSignature.Quantity - Value, 0, ItemSignature.MaxStackSize);
+	if (ItemSignature.Quantity == 0)
 	{
 		Destroy();
 	}
@@ -129,7 +129,11 @@ FInteractionResult ALPBaseItem::Interact_Implementation(ALPCharacter* Character)
 {
 	if (!Character || ItemState == EItemState::EIS_Taken) return FInteractionResult();
 	const int AddedValue = Character->AddItemToInventory(this);
-	SubtractValue(AddedValue);
+	UE_LOG(LogTemp, Display, TEXT("%i"), AddedValue);
+	if (ItemSignature.Quantity == 0 )
+	{
+		Destroy();
+	}
 
 	return FInteractionResult(ItemSignature.ObjectiveID, AddedValue);
 }

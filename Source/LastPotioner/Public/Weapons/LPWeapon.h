@@ -11,9 +11,9 @@ enum class EWeaponType : uint8
 {
 	EWT_OneHanded UMETA(DisplayName = "OneHanded"),
 	EWT_TwoHanded UMETA(DisplayName = "TwoHanded"),
+	EWT_Bow UMETA(DisplayName = "Bow"),
 };
 
-class UBoxComponent;
 class USoundBase;
 
 UCLASS()
@@ -26,55 +26,37 @@ public:
 
 	void Equip(USceneComponent* InParent, AActor* NewOwner, APawn* NewInstigator);
 	void AttachMeshToSocket(USceneComponent* InParent, FName InSocketName) const;
-	void SetCollisionEnabled(bool bCollisionEnabled) const;
 	void Arm() const;
 	void Disarm() const;
-	void ClearIgnoreActors();
 	virtual FInteractionResult Interact_Implementation(ALPCharacter* Character) override;
+	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
 
 protected:
 	virtual void BeginPlay() override;
 
-	UFUNCTION()
-	void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-						   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
-						   const FHitResult& SweepResult);
-
 	UFUNCTION(BlueprintImplementableEvent)
 	void CreateField(const FVector& FieldLocation);
 
-	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Weapon Properties")
 	float Damage = 33;
 
-private:
 	UPROPERTY()
 	TArray<AActor*> IgnoreActors;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Weapon Properties", meta = (AllowPrivateAccess = "true"))
-	UBoxComponent* WeaponBox;
-
+private:
 	UPROPERTY(EditDefaultsOnly, Category = "Weapon Properties")
 	USoundBase* EquipSound;
-
-	UPROPERTY(VisibleAnywhere)
-	USceneComponent* BoxTraceStart;
-
-	UPROPERTY(VisibleAnywhere)
-	USceneComponent* BoxTraceEnd;
 
 	UPROPERTY(EditDefaultsOnly)
 	EWeaponType WeaponType;
 
 	TMap<EWeaponType, FName> ArmSocketNames {
 		{EWeaponType::EWT_OneHanded, FName("RightHandSocket")},
-		{EWeaponType::EWT_TwoHanded, FName{"TwoHandedArmedWeaponSocket"}}};
+		{EWeaponType::EWT_TwoHanded, FName{"TwoHandedArmedWeaponSocket"}},};
+		 // Сюда добавить сопоставление EWT_Bow - название сокета куда будет попадать лук при взятии
 
 	TMap<EWeaponType, FName> DisarmSocketNames {
 			{EWeaponType::EWT_OneHanded, FName("OneHandedDisarmedWeaponSocket")},
 			{EWeaponType::EWT_TwoHanded, FName{"TwoHandedDisarmedWeaponSocket"}}};
-
-	void TryToTakeHit(const FHitResult& HitResult) const;
-
-public:
-	FORCEINLINE EWeaponType GetWeaponType() const { return WeaponType; }
+	// Сюда добавить сопоставление EWT_Bow - название сокета куда будет попадать лук при убирании
 };

@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/LPAttributeComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Weapons/LPMeleeWeapon.h"
 #include "Weapons/LPWeapon.h"
 
 ALPBaseCharacter::ALPBaseCharacter()
@@ -83,10 +84,10 @@ void ALPBaseCharacter::PlayFastAttackMontage()
 
 void ALPBaseCharacter::SetWeaponCollisionEnabled(bool CollisionEnabled) const
 {
-	if (CurrentWeapon)
+	if (auto MeleeWeapon = Cast<ALPMeleeWeapon>(CurrentWeapon))
 	{
-		CurrentWeapon->ClearIgnoreActors();
-		CurrentWeapon->SetCollisionEnabled(CollisionEnabled);
+		MeleeWeapon->ClearIgnoreActors();
+		MeleeWeapon->SetCollisionEnabled(CollisionEnabled);
 	}
 }
 

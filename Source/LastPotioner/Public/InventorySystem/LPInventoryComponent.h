@@ -24,13 +24,13 @@ public:
 	FOnSlotChangedSignature OnSlotChanged;
 
 	UFUNCTION(BlueprintCallable)
-	int AddItemByClassRef(const ALPBaseItem* Item); // to resolve blueprints conflict
+	int AddItemByRef(ALPBaseItem* Item); // to resolve blueprints conflict
 	
 	UFUNCTION(BlueprintCallable)
-	int AddItem(const FItemSignature& Item);
+	int AddItem(UPARAM(ref) FItemSignature& Item);
 
 	UFUNCTION(BlueprintCallable)
-	int AddItemInSlot(const FItemSignature& Item, int SlotIndex);
+	int AddItemInSlot(UPARAM(ref) FItemSignature& Item, int SlotIndex);
 
 	UFUNCTION(BlueprintCallable)
 	int GetSlotsNum() const { return InventoryContainer.Num(); }

@@ -41,7 +41,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	FInteractionResult Interact();
 
-	int AddItemToInventory(const ALPBaseItem* Item) const;
+	int AddItemToInventory(ALPBaseItem* Item) const;
 
 	UFUNCTION(BlueprintCallable)
 	void SetOpenedStorage(AActor* Storage);

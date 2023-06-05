@@ -54,57 +54,57 @@ TArray<FItemSignature> ULPInventoryComponent::GetSlotsByObjectiveID(FName Object
 	return Result;
 }
 
-int ULPInventoryComponent::AddItemByClassRef(const ALPBaseItem* Item)
+int ULPInventoryComponent::AddItemByRef(ALPBaseItem* Item)
 {
 	return AddItem(Item->GetSlotData());
 }
 
-int ULPInventoryComponent::AddItem(const FItemSignature& Item)
+int ULPInventoryComponent::AddItem(FItemSignature& Item)
 {
-	const int Value = Item.Value;
-	int Overage = Value;
-
-	// Until all the items are in the slots 
-	while (Overage > 0)
+	// Until all the items are in the slots
+	const int OriginalQuantity = Item.Quantity;
+	while (Item.Quantity > 0)
 	{
 		const int SlotIndex = FindSuitableSlot(Item);
 
 		if (SlotIndex != -1)
 		{
-			Overage = Value - AddItemInSlot(Item, SlotIndex);
+			AddItemInSlot(Item, SlotIndex);
 		}
 		else
 		{
 			// TODO: Inventory overflow actions
-			return Value - Overage;
+			return OriginalQuantity - Item.Quantity;
 		}
 	}
 
-	return Value;
+	return OriginalQuantity - Item.Quantity;
 }
 
-int ULPInventoryComponent::AddItemInSlot(const FItemSignature& Item, int SlotIndex)
+int ULPInventoryComponent::AddItemInSlot(FItemSignature& Item, int SlotIndex)
 {
-	if (Item.Value < 0 || SlotIndex < 0) return 0;
+	if (Item.Quantity < 0 || SlotIndex < 0) return 0;
 
 	if (InventoryContainer[SlotIndex].ID == -1)
 	{
 		InitializeSlot(SlotIndex, Item);
-		return Item.Value;
+		Item.Quantity = 0;
+		return Item.Quantity;
 	}
 	
 	FItemSignature& Slot = InventoryContainer[SlotIndex];
 
-	const int Value = Item.Value;
+	const int OriginalQuantity = Item.Quantity;
 	if (Item.ID == -1) return 0;
-	if (Slot.ID != Item.ID || Slot.Value == Slot.MaxStackSize) return 0;
+	if (Slot.ID != Item.ID || Slot.Quantity == Slot.MaxStackSize) return 0;
 
-	const int NewValue = Slot.Value + Value;
+	const int NewValue = Slot.Quantity + OriginalQuantity;
 	const int Overage = NewValue > Slot.MaxStackSize ? NewValue % Slot.MaxStackSize : 0;
-	Slot.Value = NewValue - Overage;
+	Item.Quantity = Overage;
+	Slot.Quantity = NewValue - Overage;
 	OnSlotChanged.Broadcast(SlotIndex);
 	
-	return Value - Overage;
+	return OriginalQuantity - Overage;
 }
 
 int ULPInventoryComponent::FindSuitableSlot(const FItemSignature& Item)
@@ -122,7 +122,7 @@ int ULPInventoryComponent::FindSuitableSlot(const FItemSignature& Item)
 			FirstEmptySlot = i;
 		}
 
-		if (Slot.ID == Item.ID && Slot.Value != Slot.MaxStackSize)
+		if (Slot.ID == Item.ID && Slot.Quantity != Slot.MaxStackSize)
 		{
 			return i;
 		}
@@ -134,10 +134,10 @@ int ULPInventoryComponent::FindSuitableSlot(const FItemSignature& Item)
 void ULPInventoryComponent::SubtractSlotValue(int SlotIndex, int Value)
 {
 	FItemSignature& SlotData = InventoryContainer[SlotIndex];
-	SlotData.Value -= Value;
+	SlotData.Quantity -= Value;
 	OnSlotChanged.Broadcast(SlotIndex);
 
-	if (SlotData.Value == 0)
+	if (SlotData.Quantity == 0)
 	{
 		SetSlotEmpty(SlotIndex);
 	}

@@ -45,7 +45,7 @@ struct FItemSignature
 	int ID = -1;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int Value = 0;
+	int Quantity = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsStackable = false;
@@ -70,7 +70,7 @@ struct FItemSignature
 		ItemName = Other.ItemName;
 		ItemIcon = Other.ItemIcon;
 		ID = Other.ID;
-		Value = Other.Value;
+		Quantity = Other.Quantity;
 		bIsStackable = Other.bIsStackable;
 		ItemClass = Other.ItemClass;
 		MaxStackSize = Other.MaxStackSize;
@@ -88,15 +88,15 @@ class LASTPOTIONER_API ALPBaseItem : public AActor, public IInteractable
 public:
 	ALPBaseItem();
 
-	const FItemSignature& GetSlotData() const { return ItemSignature; }
+	FItemSignature& GetSlotData() { return ItemSignature; }
 	int GetMaxStackSize() const { return ItemSignature.MaxStackSize; };
 	bool IsStackable() const { return ItemSignature.bIsStackable; }
-	int GetValue() const { return ItemSignature.Value; }
+	int GetValue() const { return ItemSignature.Quantity; }
 	int GetID() const { return ItemSignature.ID; }
 	EItemState GetItemState() const { return ItemState; }
 
 	UFUNCTION(BlueprintCallable)
-	void SetValue(int NewValue) { ItemSignature.Value = FMath::Clamp(NewValue, 0, ItemSignature.MaxStackSize); }
+	void SetValue(int NewValue) { ItemSignature.Quantity = FMath::Clamp(NewValue, 0, ItemSignature.MaxStackSize); }
 
 	void SubtractValue(int Value);
 
