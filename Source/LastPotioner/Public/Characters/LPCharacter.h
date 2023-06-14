@@ -84,6 +84,9 @@ protected:
 	void StrongAttack();
 
 	UFUNCTION()
+		void BowAttack();
+
+	UFUNCTION()
 	void JumpAttack();
 
 	virtual void Die() override;
@@ -171,6 +174,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Animation")
 	UAnimMontage* JumpAttackMontage;
+
+	UPROPERTY(EditAnywhere, Category = "Animation")
+	UAnimMontage* AimShootMontage;
 
 	void CheckForInteractables();
 

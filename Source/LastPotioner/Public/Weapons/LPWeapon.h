@@ -50,13 +50,17 @@ private:
 	UPROPERTY(EditDefaultsOnly)
 	EWeaponType WeaponType;
 
-	TMap<EWeaponType, FName> ArmSocketNames {
+	TMap<EWeaponType, FName> ArmSocketNames{
 		{EWeaponType::EWT_OneHanded, FName("RightHandSocket")},
-		{EWeaponType::EWT_TwoHanded, FName{"TwoHandedArmedWeaponSocket"}},};
+		{EWeaponType::EWT_TwoHanded, FName{"TwoHandedArmedWeaponSocket"}},
+		{EWeaponType::EWT_Bow, FName{"ArmedLongRangeWeaponSocket"}},
+	};
 		 // Сюда добавить сопоставление EWT_Bow - название сокета куда будет попадать лук при взятии
 
 	TMap<EWeaponType, FName> DisarmSocketNames {
-			{EWeaponType::EWT_OneHanded, FName("OneHandedDisarmedWeaponSocket")},
-			{EWeaponType::EWT_TwoHanded, FName{"TwoHandedDisarmedWeaponSocket"}}};
+		{EWeaponType::EWT_OneHanded, FName("OneHandedDisarmedWeaponSocket")},
+		{EWeaponType::EWT_TwoHanded, FName{"TwoHandedDisarmedWeaponSocket"}},
+		{EWeaponType::EWT_Bow, FName{"DisarmedLongRangeWeaponSocket"}},
+	};
 	// Сюда добавить сопоставление EWT_Bow - название сокета куда будет попадать лук при убирании
 };

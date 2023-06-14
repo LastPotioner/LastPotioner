@@ -254,6 +254,9 @@ void ALPCharacter::OnArmEnd()
 		case EWeaponType::EWT_TwoHanded:
 			CharacterState = ECharacterState::ECS_EquippedTwoHandedWeapon;
 			break;
+		case EWeaponType::EWT_Bow:
+			CharacterState = ECharacterState::ECS_EquippedLongRangeWeapon;
+			break;
 		}
 
 		OnCharacterStateChanged.Broadcast(CharacterState);
@@ -283,6 +286,17 @@ void ALPCharacter::StrongAttack()
 		GetCharacterMovement()->SetMovementMode(MOVE_None);
 		ActionState = EActionState::EAS_Attacking;
 		PlayAnimMontage(StrongAttackMontage);
+	}
+}
+
+void ALPCharacter::BowAttack()
+{
+	if (CanAttack())
+	{
+		if (CharacterState == ECharacterState::ECS_EquippedLongRangeWeapon)
+		{
+			PlayAnimMontage(StrongAttackMontage);
+		}
 	}
 }
 
