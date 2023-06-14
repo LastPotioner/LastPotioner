@@ -54,6 +54,40 @@ TArray<FItemSignature> ULPInventoryComponent::GetSlotsByObjectiveID(FName Object
 	return Result;
 }
 
+bool ULPInventoryComponent::ContainsRequiredAmountOfItem(TSubclassOf<ALPBaseItem> ItemClass, int Quantity) const
+{
+	int FoundQuantity = 0;
+	for (const auto& Item : InventoryContainer)
+	{
+		if (Item.ItemClass == ItemClass)
+		{
+			FoundQuantity += Item.Quantity;
+
+			if (FoundQuantity >= Quantity)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+TArray<int> ULPInventoryComponent::GetItemIndexes(TSubclassOf<ALPBaseItem> ItemClass) const
+{
+	TArray<int> Indexes;
+
+	for (int i = 0; i < InventoryContainer.Num(); i++)
+	{
+		if (InventoryContainer[i].ItemClass == ItemClass)
+		{
+			Indexes.Add(i);
+		}
+	}
+
+	return Indexes;
+}
+
 int ULPInventoryComponent::AddItemByRef(ALPBaseItem* Item)
 {
 	return AddItem(Item->GetSlotData());

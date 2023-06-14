@@ -52,6 +52,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TArray<FItemSignature> GetSlotsByObjectiveID(FName ObjectiveID);
 
+	UFUNCTION(BlueprintCallable)
+	bool ContainsRequiredAmountOfItem(TSubclassOf<ALPBaseItem> ItemClass, int Quantity) const;
+
+	UFUNCTION(BlueprintCallable)
+	TArray<int> GetItemIndexes(TSubclassOf<ALPBaseItem> ItemClass) const;
 
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
