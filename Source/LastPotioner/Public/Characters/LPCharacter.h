@@ -83,8 +83,6 @@ protected:
 	UFUNCTION()
 	void StrongAttack();
 
-	UFUNCTION()
-		void BowAttack();
 
 	UFUNCTION()
 	void JumpAttack();

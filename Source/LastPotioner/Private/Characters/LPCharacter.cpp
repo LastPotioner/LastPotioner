@@ -289,16 +289,6 @@ void ALPCharacter::StrongAttack()
 	}
 }
 
-void ALPCharacter::BowAttack()
-{
-	if (CanAttack())
-	{
-		if (CharacterState == ECharacterState::ECS_EquippedLongRangeWeapon)
-		{
-			PlayAnimMontage(StrongAttackMontage);
-		}
-	}
-}
 
 void ALPCharacter::JumpAttack()
 {
@@ -328,7 +318,8 @@ bool ALPCharacter::CanAttack() const
 {
 	return (ActionState == EActionState::EAS_Unoccupied)
 	&& (CharacterState != ECharacterState::ECS_Unequipped)
-	&& (!GetCharacterMovement()->IsFalling());
+	&& (!GetCharacterMovement()->IsFalling())
+	&& (CharacterState != ECharacterState::ECS_EquippedLongRangeWeapon);
 }
 
 void ALPCharacter::GetHit_Implementation(const FHitResult& HitResult)
