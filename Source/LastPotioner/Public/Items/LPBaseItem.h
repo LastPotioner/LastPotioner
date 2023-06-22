@@ -154,7 +154,7 @@ private:
 	UFUNCTION()
 	void SineMovement();
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	FItemSignature ItemSignature;
 
 	UPROPERTY(EditDefaultsOnly)
