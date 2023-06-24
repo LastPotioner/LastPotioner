@@ -268,6 +268,7 @@ void ALPCharacter::OnArmEnd()
 
 void ALPCharacter::FastAttack()
 {
+	UE_LOG(LogTemp, Display, TEXT("%i"), CanAttack())
 	if (CanAttack())
 	{
 		GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed / 2.0f;

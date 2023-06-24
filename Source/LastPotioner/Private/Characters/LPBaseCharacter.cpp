@@ -76,9 +76,10 @@ void ALPBaseCharacter::PlayFastAttackMontage()
 	}
 
 	if (!MontageToPlay) return;
-
+	
 	const uint8 AttackNumber = FMath::RandRange(0, MontageToPlay->GetNumSections() - 1);
 	const FName SectionName = MontageToPlay->GetSectionName(AttackNumber);
+	UE_LOG(LogTemp, Display, TEXT("%s"), *SectionName.ToString());
 	PlayAnimMontage(MontageToPlay, 1, SectionName);
 }
 
