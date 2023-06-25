@@ -88,7 +88,7 @@ class LASTPOTIONER_API ALPBaseItem : public AActor, public IInteractable
 public:
 	ALPBaseItem();
 
-	FItemSignature& GetSlotData() { return ItemSignature; }
+	FItemSignature& GetItemSignature() { return ItemSignature; }
 	int GetMaxStackSize() const { return ItemSignature.MaxStackSize; };
 	bool IsStackable() const { return ItemSignature.bIsStackable; }
 	int GetValue() const { return ItemSignature.Quantity; }

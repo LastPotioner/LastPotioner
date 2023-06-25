@@ -163,6 +163,7 @@ void ALPCharacter::PickUpOverlappingItem()
 		OverlappingWeapon->Equip(GetMesh(), this, this);
 		EquippedWeapons.Add(OverlappingWeapon);
 		OverlappingItem = nullptr;
+		OnObjectiveIDCalled.Broadcast(OverlappingWeapon->GetItemSignature().ObjectiveID, 1);
 	}
 }
 

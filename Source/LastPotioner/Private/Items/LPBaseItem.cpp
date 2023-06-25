@@ -18,7 +18,7 @@ ALPBaseItem::ALPBaseItem()
 	ItemMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ItemMesh"));
 	ItemMesh->SetCollisionResponseToAllChannels(ECR_Block);
 	ItemMesh->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
-	ItemMesh->SetSimulatePhysics(true);
+	ItemMesh->SetSimulatePhysics(false);
 	ItemMesh->SetupAttachment(Sphere);
 
 	EmbersEffect = CreateDefaultSubobject<UNiagaraComponent>(TEXT("EmbersEffect"));

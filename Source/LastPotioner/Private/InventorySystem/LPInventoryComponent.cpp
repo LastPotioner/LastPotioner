@@ -90,7 +90,7 @@ TArray<int> ULPInventoryComponent::GetItemIndexes(TSubclassOf<ALPBaseItem> ItemC
 
 int ULPInventoryComponent::AddItemByRef(ALPBaseItem* Item)
 {
-	return AddItem(Item->GetSlotData());
+	return AddItem(Item->GetItemSignature());
 }
 
 int ULPInventoryComponent::AddItem(FItemSignature& Item)

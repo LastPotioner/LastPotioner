@@ -23,6 +23,7 @@ class ALPBaseItem;
 class ALPWeapon;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnCharacterDiedSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnObjectiveIDCalledSignature, FName, ObjectiveID, int, Value);
 
 UCLASS()
 class LASTPOTIONER_API ALPCharacter : public ALPBaseCharacter
@@ -34,6 +35,9 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	FOnCharacterStateChangedSignature OnCharacterStateChanged;
+
+	UPROPERTY(BlueprintAssignable, BlueprintCallable)
+	FOnObjectiveIDCalledSignature OnObjectiveIDCalled;
 
 	virtual void GetHit_Implementation(const FHitResult& HitResult) override;
 	virtual void Tick(float DeltaSeconds) override;
