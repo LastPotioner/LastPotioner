@@ -66,7 +66,7 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	ULPHealthBarComponent* HealthBarComponent;
 
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta=(AllowPrivateAccess = "true"))
 	UPawnSensingComponent* PawnSensingComponent;
 
 	/*

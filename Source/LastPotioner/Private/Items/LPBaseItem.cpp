@@ -25,7 +25,7 @@ ALPBaseItem::ALPBaseItem()
 	EmbersEffect->SetupAttachment(ItemMesh);
 
 	ToolTipWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("ToolTipText"));
-	ToolTipWidget->SetupAttachment(GetRootComponent());
+	ToolTipWidget->SetupAttachment(ItemMesh);
 }
 
 void ALPBaseItem::BeginPlay()

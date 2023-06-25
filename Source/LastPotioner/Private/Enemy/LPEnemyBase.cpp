@@ -247,6 +247,7 @@ void ALPEnemyBase::OnAttackEnd()
 
 void ALPEnemyBase::OnSeePawn(APawn* Pawn)
 {
+	UE_LOG(LogTemp, Display, TEXT("%s"), *Pawn->GetName());
 	if (!Pawn || !Pawn->ActorHasTag("LPCharacter") || EnemyState == EEnemyState::EES_Dead) return;
 	
 	const bool bShouldChaseTarget =
