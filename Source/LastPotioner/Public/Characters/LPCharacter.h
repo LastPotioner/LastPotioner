@@ -66,6 +66,7 @@ protected:
 	virtual void BeginPlay() override;
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void Run(const FInputActionValue& Value);
 	void PickUpOverlappingItem();
 	virtual bool CanAttack() const override;
 	virtual void FastAttack() override;
@@ -156,6 +157,9 @@ private:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* EscapeAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
+	UInputAction* ToggleRun;
 
 	/*
 	 * Appearance

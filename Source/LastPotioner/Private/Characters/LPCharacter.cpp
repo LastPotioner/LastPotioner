@@ -129,6 +129,9 @@ void ALPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 			StrongAttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::StrongAttack);
 		EnhancedInputComponent->BindAction(
 			JumpAttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::JumpAttack);
+		EnhancedInputComponent->BindAction(
+			ToggleRun, ETriggerEvent::Triggered, this, &ALPCharacter::Run
+		);
 	}
 }
 
@@ -154,6 +157,16 @@ void ALPCharacter::Look(const FInputActionValue& Value)
 		AddControllerYawInput(LookAxisValue.X * RotationSensitivityMultiplier);
 		AddControllerPitchInput(-LookAxisValue.Y * RotationSensitivityMultiplier);
 	}
+}
+
+void ALPCharacter::Run(const FInputActionValue& Value)
+{
+	const bool IsRunning = Value.Get<bool>();
+
+	if (IsRunning) {
+		UE_LOG(LogTemp, Warning, TEXT("Run"));
+	}
+	
 }
 
 void ALPCharacter::PickUpOverlappingItem()
