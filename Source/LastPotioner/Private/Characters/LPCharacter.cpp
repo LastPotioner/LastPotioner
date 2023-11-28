@@ -117,7 +117,7 @@ void ALPCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	{
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ALPCharacter::Move);
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &ALPCharacter::Look);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
+		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ALPCharacter::CanJump);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &ALPCharacter::FastAttack);
 		EnhancedInputComponent->BindAction(
 			EquipAction, ETriggerEvent::Triggered, this, &ALPCharacter::HandleWeaponAction);
@@ -163,11 +163,36 @@ void ALPCharacter::Run(const FInputActionValue& Value)
 {
 	const bool IsRunning = Value.Get<bool>();
 
-	if (IsRunning) {
+	if (IsRunning) 
+	{
 		UE_LOG(LogTemp, Warning, TEXT("Run"));
 	}
 	
 }
+
+
+void ALPCharacter::CanJump(const FInputActionValue& Value)
+{
+	const bool isJumping = Value.Get<bool>();
+	FTimerHandle JumpTimer;
+
+	if (!isFalling)
+	{
+		if (isJumping)
+		{
+			GetWorldTimerManager().SetTimer(JumpTimer, this, &ACharacter::Jump, 0.2f, false);
+		}
+	}
+}
+
+void ALPCharacter::Jumping()
+{
+	if (!readyToJump) {
+		readyToJump = true;
+	}
+}
+
+
 
 void ALPCharacter::PickUpOverlappingItem()
 {

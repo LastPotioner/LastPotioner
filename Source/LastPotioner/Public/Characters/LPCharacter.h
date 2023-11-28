@@ -67,6 +67,8 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void Run(const FInputActionValue& Value);
+	void CanJump(const FInputActionValue& Value);
+	void Jumping();
 	void PickUpOverlappingItem();
 	virtual bool CanAttack() const override;
 	virtual void FastAttack() override;
@@ -97,6 +99,9 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxMovementSpeed = 600.0f;
+
+	UPROPERTY(EditAnywhere, Category = "Movement")
+	bool isFalling = false;
 
 	UPROPERTY()
 	AActor* CurrentInteractable;
@@ -130,6 +135,9 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Movement")
 	float MaxWalkSpeed = 600.0f;
+
+	UPROPERTY(EditAnywhere)
+	bool readyToJump = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Input", meta = (AllowPrivateAccess = "true"))
 	UInputAction* LookAction;
