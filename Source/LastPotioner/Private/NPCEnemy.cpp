@@ -32,3 +32,7 @@ void ANPCEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 }
 
+UBehaviorTree* ANPCEnemy::GetBehaviorTree() const{
+    return Tree;
+}
+

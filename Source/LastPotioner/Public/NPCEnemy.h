@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+
+#include "BehaviorTree/BehaviorTree.h"
 #include "NPCEnemy.generated.h"
 
 UCLASS()
@@ -15,15 +17,19 @@ public:
 	// Sets default values for this character's properties
 	ANPCEnemy();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UBehaviorTree* GetBehaviorTree() const; //функция получения дерева
+	
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+
+	// Called every frame
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))
+	UBehaviorTree* Tree; //дерево поведения 
 
 };
