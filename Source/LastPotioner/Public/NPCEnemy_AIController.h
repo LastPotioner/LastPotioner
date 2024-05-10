@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "NPCEnemy_AIController.generated.h"
 
 /**
@@ -18,5 +19,16 @@ public: //конструктор
     
 protected:
     virtual void OnPossess(APawn* InPawn) override;
+    
+private:
+       //vospriyatie mesta npc
+    class UAISenseConfig_Sight* SightConfig;
+    
+     void SetupPerceptionSystem();
+
+    UFUNCTION()
+    void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
+
+    
       	
 };

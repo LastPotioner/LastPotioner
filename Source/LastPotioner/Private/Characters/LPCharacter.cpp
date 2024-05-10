@@ -13,6 +13,8 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "InventorySystem/LPInventoryComponent.h"
 #include "Interfaces/Interactable.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 ALPCharacter::ALPCharacter()
 {
@@ -33,6 +35,16 @@ ALPCharacter::ALPCharacter()
 	GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_WorldDynamic, ECollisionResponse::ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	GetMesh()->SetupAttachment(GetRootComponent());
+	
+ 	SetupStimulusSource();
+}
+
+void ALPCharacter :: SetupStimulusSource(){
+    StimulusSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus"));
+    if(StimulusSource){
+        StimulusSource->RegisterForSense(TSubclassOf<UAISense_Sight>());
+        StimulusSource->RegisterWithPerceptionSystem();
+    }
 }
 
 void ALPCharacter::BeginPlay()

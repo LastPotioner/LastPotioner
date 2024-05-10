@@ -193,6 +193,10 @@ private:
 	UAnimMontage* AimShootMontage;
 
 	void CheckForInteractables();
+	
+	class UAIPerceptionStimuliSourceComponent* StimulusSource;
+	void SetupStimulusSource();
+
 
 public:
 	FORCEINLINE void SetOverlappingItem(ALPBaseItem* Item) { OverlappingItem = Item; }
