@@ -7,6 +7,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Characters/LPCharacter.h"
+#include "CPP_MainGameCharacter.h"
 
 ANPCEnemy_AIController:: ANPCEnemy_AIController(FObjectInitializer const& ObjectInitializer)
 {
@@ -58,7 +59,7 @@ void ANPCEnemy_AIController::SetupPerceptionSystem(){
 void ANPCEnemy_AIController::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus){
 
 
-    if(auto* const ch = Cast<ALPCharacter>(Actor))
+    if(auto* const ch = Cast<ACPP_MainGameCharacter>(Actor))
     {
             GetBlackboardComponent()->SetValueAsBool("CanSeePLayer", Stimulus.WasSuccessfullySensed());
    
