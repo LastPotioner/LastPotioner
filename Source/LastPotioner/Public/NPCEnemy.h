@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-
+#include "PatrolPath.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "NPCEnemy.generated.h"
 
@@ -23,13 +23,18 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	UBehaviorTree* GetBehaviorTree() const; //функция получения дерева
 	
+	APatrolPath* GetPatrolPath() const;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-
+private:
 	// Called every frame
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))
 	UBehaviorTree* Tree; //дерево поведения 
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="AI", meta=(AllowPrivateAccess="true"))
+	APatrolPath* PatrolPath;
 
 };

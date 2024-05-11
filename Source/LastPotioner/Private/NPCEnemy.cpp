@@ -36,3 +36,7 @@ UBehaviorTree* ANPCEnemy::GetBehaviorTree() const{
     return Tree;
 }
 
+APatrolPath* ANPCEnemy::GetPatrolPath() const{
+return PatrolPath;
+}
+
