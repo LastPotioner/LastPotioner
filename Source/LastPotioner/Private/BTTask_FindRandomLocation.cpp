@@ -7,7 +7,8 @@
 #include "NavigationSystem.h"
 #include "NPCEnemy_AIController.h"
 
-UBTTask_FindRandomLocation::UBTTask_FindRandomLocation(FObjectInitializer const& ObjectInitializer){
+UBTTask_FindRandomLocation::UBTTask_FindRandomLocation(FObjectInitializer const& ObjectInitializer): UBTTask_BlackboardBase{ObjectInitializer}
+{
 
     NodeName = "Find Random Location In NavMesh";
 
