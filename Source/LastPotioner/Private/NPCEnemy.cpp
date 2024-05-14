@@ -39,4 +39,13 @@ UBehaviorTree* ANPCEnemy::GetBehaviorTree() const{
 APatrolPath* ANPCEnemy::GetPatrolPath() const{
 return PatrolPath;
 }
+UAnimMontage* ANPCEnemy::GetMontage()const {
+	return Montage;
+}
+int ANPCEnemy::MeleeAttack_Implementation() {
+    if(Montage){
+        PlayAnimMontage(Montage);
+    }
+    return 0;
+}
 
