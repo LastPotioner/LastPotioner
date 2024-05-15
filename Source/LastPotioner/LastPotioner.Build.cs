@@ -8,7 +8,7 @@ public class LastPotioner : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Niagara", "EnhancedInput", "AIModule","GameplayTasks","NavigationSystem", "UMG" }); //модули
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Niagara", "EnhancedInput", "AIModule","GameplayTasks","NavigationSystem", "UMG","Slate","SlateCore" }); //модули
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

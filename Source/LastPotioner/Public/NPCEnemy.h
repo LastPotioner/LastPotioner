@@ -7,11 +7,12 @@
 #include "PatrolPath.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "CombatInterface.h"
+#include "CppAICharacterBase.h"
 #include "Animation/AnimMontage.h"
 #include "NPCEnemy.generated.h"
 
 UCLASS()
-class LASTPOTIONER_API ANPCEnemy : public ACharacter, public ICombatInterface
+class LASTPOTIONER_API ANPCEnemy : public ACppAICharacterBase, public ICombatInterface
 {
 	GENERATED_BODY()
 
