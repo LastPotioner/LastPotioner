@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "AttackAnimNotifyState.h"
 #include "CppAICharacterBase.generated.h"
 
 UCLASS()
@@ -23,6 +24,8 @@ public:
     float GetHealth() const;
     float GetMaxHealth() const;
     void SetHealth(float const NewHealth);
+    void AttackStart() const;
+    void AttackEnd() const;
 
 
 protected:
@@ -34,5 +37,24 @@ private:
     float const MaxHealth{100.f};
     float Health;
     
+    UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category=Collision, meta=(AllowPrivateAccess="true"))
+	class UBoxComponent* LeftFirstCollisionBox;
+	
+	UFUNCTION()
+	void OnAttackOverlapBegin(
+	    UPrimitiveComponent* const OverlappedComponent,
+	    AActor* const OtherActor,
+	    UPrimitiveComponent* const OtherComponent,
+	    int const OtherBodyIndex,
+	    bool const FromSweep,
+	    FHitResult const& SweepResult
+	    );
+	   UFUNCTION()
+	   void OnAttackOverlapEnd(
+	        UPrimitiveComponent* const OverlappedComponent,
+	        AActor* const OtherActor,
+	        UPrimitiveComponent* OtherComponent,
+	        int const OtherBodyIndex
+	   );
 	
 };
