@@ -70,10 +70,10 @@ void ACppAICharacterBase::OnAttackOverlapBegin(
     if(OtherActor == this){
         return;
     }
-//     if(auto const Enemy = Cast<ANPCEnemy>(OtherActor)){
-//         auto const NewHealth = Enemy->GetHealth() - Enemy->GetMaxHealth() * 0.1f;
-//         Enemy->SetHealth(NewHealth); 
-//     }
+    if(auto const Enemy = Cast<ANPCEnemy>(OtherActor)){
+        auto const NewHealth = Enemy->GetHealth() - Enemy->GetMaxHealth() * 0.1f;
+        Enemy->SetHealth(NewHealth); 
+    }
 //     else if(auto const Player = Cast<ACPP_MainGameCharacter>(OtherActor)){
 //         auto const NewHealth = Player->GetHealth() - Player->GetMaxHealth() * 0.07f;
 //         Player->SetHealth(NewHealth);
