@@ -14,7 +14,7 @@
 ACppAICharacterBase::ACppAICharacterBase():
 WidgetComponent{CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthValue"))},
 Health{MaxHealth},
- LeftFirstCollisionBox{CreateDefaultSubobject<UBoxComponent>(TEXT("LeftFirstCollisionBox"))}
+LeftFirstCollisionBox{CreateDefaultSubobject<UBoxComponent>(TEXT("LeftFirstCollisionBox"))}
 {
     PrimaryActorTick.bCanEverTick = true;
     if(WidgetComponent){
@@ -34,7 +34,7 @@ Health{MaxHealth},
             EAttachmentRule::SnapToTarget,
             EAttachmentRule::KeepWorld,
             false};
-         LeftFirstCollisionBox->AttachToComponent(GetMesh(), Rules, defs::LeftFirstSocketName);
+        // LeftFirstCollisionBox->AttachToComponent(GetMesh(), Rules, defs::LeftFirstSocketName);
        //  LeftFirstCollisionBox->SetRelativeLocation(defs::CollisionBoxLocation);
         
     }
